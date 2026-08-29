@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap-index.xml
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap.xml
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap-growth.xml
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap-cidades-brasil.xml
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap-mundial-paises.xml
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap-guias-turisticos.xml
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap-guias-cidades.xml
+Sitemap: https://www.aquitemachadinhos.com.br/sitemap-dados.xml

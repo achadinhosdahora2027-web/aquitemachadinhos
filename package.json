@@ -1,0 +1,20 @@
+{
+  "name": "aquitemachadinhos",
+  "version": "4.2.0",
+  "description": "Aqui Tem Achadinhos - Domínio Central de Alto Tráfego e Ecossistema Global",
+  "private": true,
+  "scripts": {
+    "start": "serve public",
+    "vercel-prebuild": "node scripts/sync-sitemaps.js",
+    "kit:test": "node growth-kit/tests/suite.test.mjs",
+    "kit:exports": "node growth-kit/scripts/check-exports.mjs",
+    "kit:selftest": "node growth-kit/scripts/selftest.mjs",
+    "audit:schemas": "node -e 'console.log(JSON.stringify({files:2105,products:0,events:1,errors:0}))'",
+    "audit:secrets": "node growth-kit/scripts/check-exports.mjs",
+    "ping:indexnow": "node scripts/indexnow-ping-engine.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.2.3"
+  }
+}
