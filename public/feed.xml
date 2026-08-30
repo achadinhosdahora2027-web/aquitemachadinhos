@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Aqui Tem Achadinhos - Feed Global de Entretenimento, Ofertas &amp; Horóscopo 2026</title>
+    <link>https://www.aquitemachadinhos.com.br</link>
+    <description>Atualizações diárias de horóscopo dos 12 signos, mapa astral, descontos e radar turístico internacional.</description>
+    <language>pt-BR</language>
+    <lastBuildDate>Sun, 30 Aug 2026 19:45:00 GMT</lastBuildDate>
+    <atom:link href="https://www.aquitemachadinhos.com.br/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link rel="hub" href="https://pubsubhubbub.appspot.com/" />
+    <atom:link rel="hub" href="https://pubsubhubbub.superfeedr.com/" />
+
+    <item>
+      <title>Horóscopo Diário, Tiragem de Tarot 3D &amp; Mapa Astral Instantâneo</title>
+      <link>https://www.aquitemachadinhos.com.br/entretenimento</link>
+      <guid isPermaLink="true">https://www.aquitemachadinhos.com.br/entretenimento</guid>
+      <pubDate>Sun, 30 Aug 2026 08:00:00 GMT</pubDate>
+      <description>Confira seu horóscopo quântico diário, números da sorte para loterias e teste sua afinidade cósmica.</description>
+    </item>
+
+    <item>
+      <title>Guia Completo Natal Luz Gramado 2026: Hotéis e Ingressos</title>
+      <link>https://www.aquitemachadinhos.com.br/natal-luz-2026</link>
+      <guid isPermaLink="true">https://www.aquitemachadinhos.com.br/natal-luz-2026</guid>
+      <pubDate>Sun, 30 Aug 2026 09:00:00 GMT</pubDate>
+      <description>As melhores pousadas e hotéis com cancelamento grátis e descontos exclusivos de primavera/verão.</description>
+    </item>
+
+    <item>
+      <title>Black Friday 2026: Cupons Exclusivos e Alerta de Ofertas</title>
+      <link>https://www.aquitemachadinhos.com.br/black-friday-2026-cupons</link>
+      <guid isPermaLink="true">https://www.aquitemachadinhos.com.br/black-friday-2026-cupons</guid>
+      <pubDate>Sun, 30 Aug 2026 10:00:00 GMT</pubDate>
+      <description>Seleção cirúrgica de eletrônicos, notebooks e gadgets com frete grátis e cashback garantido.</description>
+    </item>
+
+    <item>
+      <title>Radar Mundial: Guia de Viagens, Câmbio e Cibersegurança</title>
+      <link>https://www.aquitemachadinhos.com.br/radar-mundial</link>
+      <guid isPermaLink="true">https://www.aquitemachadinhos.com.br/radar-mundial</guid>
+      <pubDate>Sun, 30 Aug 2026 11:00:00 GMT</pubDate>
+      <description>Planejamento de viagens internacionais, aluguel de veículos sem franquia e proteção de dados bancários.</description>
+    </item>
+  </channel>
+</rss>
