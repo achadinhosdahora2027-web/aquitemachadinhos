@@ -20,6 +20,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Refresh Dynamic Geo-Sitemaps & Timestamps
+        run: |
+          node scripts/generate-geo-sitemaps.js || true
+
       - name: Execute Full Omni-Search Multi-Engine Pings (195 Countries)
         run: |
           node scripts/global-omni-search-engine-ping.js || true
