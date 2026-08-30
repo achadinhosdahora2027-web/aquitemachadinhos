@@ -22,6 +22,7 @@
   "rewrites": [
     { "source": "/radar-mundial", "destination": "/radar-mundial.html" },
     { "source": "/mundial", "destination": "/mundial.html" },
+    { "source": "/entretenimento", "destination": "/entretenimento.html" },
     { "source": "/transportes", "destination": "/transportes.html" },
     { "source": "/us/new-york", "destination": "/us/new-york.html" },
     { "source": "/fr/paris", "destination": "/fr/paris.html" },
