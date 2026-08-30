@@ -1,0 +1,16 @@
+{
+  "name": "Aqui Tem Achadinhos — Entretenimento & Horóscopo",
+  "short_name": "Achadinhos",
+  "start_url": "/entretenimento",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#4f46e5",
+  "description": "Seu portal diário de entretenimento inteligente, horóscopo dos 12 signos, tarot, quizzes e as melhores ofertas do Brasil e do mundo.",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}

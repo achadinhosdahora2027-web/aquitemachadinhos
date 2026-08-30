@@ -1,17 +1,19 @@
-name: Affiliate Health Guard & Monetization Canary
+name: Daily Owned Traffic & IndexNow Sync Pipeline
 
 on:
   schedule:
-    - cron: "0 */6 * * *"
+    - cron: "0 6 * * *"
   workflow_dispatch:
 
 jobs:
-  guard:
+  sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Executar Auditoria Forense de Monetização
+      - name: Sincronizar Sitemaps e Rotas Canárias
         run: node scripts/affiliate-health-check.js
+      - name: Disparar IndexNow para Motores de Busca
+        run: node scripts/indexnow-ping-engine.js

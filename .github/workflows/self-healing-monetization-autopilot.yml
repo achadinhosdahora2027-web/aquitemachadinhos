@@ -1,0 +1,21 @@
+name: Self-Healing Monetization & Revenue Autopilot 24/7
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"
+  workflow_dispatch:
+
+jobs:
+  autopilot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Executar Auditoria Canário de Afiliados
+        run: node scripts/affiliate-health-check.js
+      - name: Disparar Submissão Imediata IndexNow (Bing/Googlebot)
+        run: node scripts/indexnow-ping-engine.js
+      - name: Otimizar Lances e Atribuição de Ganhos
+        run: node scripts/yield-maximizer.js

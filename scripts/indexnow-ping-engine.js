@@ -10,7 +10,22 @@ const ENDPOINTS = [
   'https://yandex.com/indexnow'
 ];
 
-async function submitBatch(batchUrls, batchNum) {
+const URLS_TO_SUBMIT = [
+  'https://www.aquitemachadinhos.com.br/',
+  'https://www.aquitemachadinhos.com.br/entretenimento',
+  'https://www.aquitemachadinhos.com.br/radar-mundial',
+  'https://www.aquitemachadinhos.com.br/natal-luz-2026',
+  'https://www.aquitemachadinhos.com.br/o-que-fazer-em-gramado',
+  'https://www.aquitemachadinhos.com.br/oktoberfest-blumenau-2026',
+  'https://www.aquitemachadinhos.com.br/rock-in-rio-2026',
+  'https://www.aquitemachadinhos.com.br/black-friday-2026-cupons',
+  'https://www.aquitemachadinhos.com.br/cirio-de-nazare-belem-2026',
+  'https://www.aquitemachadinhos.com.br/festa-do-peao-barretos-2027-ingressos',
+  'https://www.aquitemachadinhos.com.br/transportes',
+  'https://www.aquitemachadinhos.com.br/mundial'
+];
+
+async function submitBatch(batchUrls) {
   const payload = JSON.stringify({
     host: HOST,
     key: KEY,
@@ -18,54 +33,52 @@ async function submitBatch(batchUrls, batchNum) {
     urlList: batchUrls
   });
 
-  console.log(`\n--- Disparando Lote ${batchNum} (${batchUrls.length} URLs) ---`);
+  console.log(`Disparando IndexNow para ${batchUrls.length} URLs...`);
 
-  for (const endpoint of ENDPOINTS) {
-    try {
-      const url = new URL(endpoint);
-      const req = https.request({
-        hostname: url.hostname,
-        path: url.pathname,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          'Content-Length': Buffer.byteLength(payload)
-        }
-      }, (res) => {
-        console.log(`✓ [${endpoint}] HTTP Status: ${res.statusCode}`);
-      });
+  const promises = ENDPOINTS.map(endpoint => {
+    return new Promise((resolve) => {
+      try {
+        const u = new URL(endpoint);
+        const req = https.request({
+          hostname: u.hostname,
+          path: u.pathname,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Content-Length': Buffer.byteLength(payload)
+          },
+          timeout: 5000
+        }, (res) => {
+          console.log(`✓ [${endpoint}] HTTP ${res.statusCode}`);
+          resolve({ endpoint, status: res.statusCode });
+        });
 
-      req.on('error', (e) => {
-        console.error(`✗ [${endpoint}] Error: ${e.message}`);
-      });
+        req.on('error', (err) => {
+          console.log(`⚠ [${endpoint}] Erro: ${err.message}`);
+          resolve({ endpoint, error: err.message });
+        });
 
-      req.write(payload);
-      req.end();
-    } catch (err) {
-      console.error(`Error with ${endpoint}:`, err);
-    }
-  }
+        req.on('timeout', () => {
+          req.destroy();
+          console.log(`⚠ [${endpoint}] Timeout`);
+          resolve({ endpoint, timeout: true });
+        });
+
+        req.write(payload);
+        req.end();
+      } catch (e) {
+        resolve({ endpoint, error: e.message });
+      }
+    });
+  });
+
+  await Promise.all(promises);
 }
 
 async function run() {
-  const sampleUrls = [
-    `https://${HOST}/`,
-    `https://${HOST}/radar-mundial`,
-    `https://${HOST}/mundial`,
-    `https://${HOST}/transportes`,
-    `https://${HOST}/us/new-york`,
-    `https://${HOST}/fr/paris`,
-    `https://${HOST}/jp/tokyo`,
-    `https://${HOST}/pt/lisbon`,
-    `https://${HOST}/it/rome`,
-    `https://${HOST}/es/barcelona`,
-    `https://${HOST}/ar/buenos-aires`,
-    `https://${HOST}/nl/amsterdam`
-  ];
-
-  console.log(`Iniciando motor de submissão IndexNow para ${HOST}...`);
-  await submitBatch(sampleUrls, 1);
-  console.log(`\nSubmissão IndexNow concluída com sucesso! Total: ${sampleUrls.length} URLs enviadas.`);
+  await submitBatch(URLS_TO_SUBMIT);
+  console.log('--- Submissão IndexNow Concluída com Sucesso! ---');
+  process.exit(0);
 }
 
 run();
