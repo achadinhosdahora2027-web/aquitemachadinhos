@@ -24,6 +24,10 @@ jobs:
         run: |
           node scripts/generate-geo-sitemaps.js || true
 
+      - name: Refresh Automated Social Feeds & Syndication Channels
+        run: |
+          node scripts/generate-social-syndication-feeds.js || true
+
       - name: Execute Full Omni-Search Multi-Engine Pings (195 Countries)
         run: |
           node scripts/global-omni-search-engine-ping.js || true
