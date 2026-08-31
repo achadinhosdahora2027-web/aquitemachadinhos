@@ -1352,7 +1352,15 @@
       cardEl.innerHTML = '<div class="tarot-icon">' + card.icon + '</div>' +
         '<div class="tarot-title">' + card.name + '</div>' +
         '<div class="tarot-meaning">' + card.desc + '</div>' +
-        '<div style="margin-top:12px; font-size:0.75rem; color:#fde047;">✨ Carta Ativa Hoje</div>';
+        '<div style="margin-top:12px; font-size:0.75rem; color:#fde047; font-weight:800;">✨ Carta Revelada com Sucesso</div>' +
+        '<div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:12px;">' +
+          '<button onclick="event.stopPropagation(); shareResultViral(\'🔮 Minha Carta de Tarot: ' + card.name + '\', \'' + card.desc.replace(/'/g, "") + '\')" style="background:#25D366; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">💬 Compartilhar no WhatsApp</button>' +
+          '<button onclick="event.stopPropagation(); shareTelegramViral(\'🔮 Carta: ' + card.name + '\', \'' + card.desc.replace(/'/g, "") + '\')" style="background:#229ED9; color:#fff; border:none; padding:6px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer;">✈️ Telegram</button>' +
+        '</div>' +
+        '<div style="margin-top:10px; padding:10px; background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.4); border-radius:8px;">' +
+          '<div style="font-size:0.75rem; color:#a5b4fc; font-weight:700;">🎁 Cupom Cósmico Desbloqueado: <span class="live-countdown" style="color:#fde047;">45m 12s</span></div>' +
+          '<a href="https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=shopee&site=aquitemachadinhos&slot=tarot_reward" target="_blank" rel="sponsored noopener noreferrer nofollow" style="display:inline-block; margin-top:6px; background:#6366f1; color:#fff; padding:6px 12px; border-radius:6px; font-size:0.75rem; font-weight:800; text-decoration:none;">Resgatar Oferta Exclusiva ➔</a>' +
+        '</div>';
     }
 
     // FORTUNE COOKIE
@@ -1569,5 +1577,6 @@
 <script src="/js/affiliate-telemetry.js" defer></script>
   <script type="text/javascript"> var infolinks_pid = 3447442; var infolinks_wsid = 0; </script>
 <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>
+  <script src="/js/growth-cro-engine.js" defer></script>
 </body>
 </html>
