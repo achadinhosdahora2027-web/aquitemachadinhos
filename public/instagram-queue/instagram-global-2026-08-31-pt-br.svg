@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080" width="1080" height="1080">
+  <defs>
+    <linearGradient id="bgGrad_0" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="50%" stop-color="#4338ca" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1080" height="1080" fill="url(#bgGrad_0)" />
+  <circle cx="540" cy="540" r="460" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="2" />
+  
+  <rect x="80" y="80" width="920" height="920" rx="36" fill="rgba(15, 23, 42, 0.75)" stroke="rgba(255,255,255,0.12)" stroke-width="2" />
+
+  <!-- Flag & Badge -->
+  <rect x="140" y="140" width="460" height="56" rx="28" fill="#fbbf24" />
+  <text x="370" y="177" font-family="system-ui, sans-serif" font-size="20" font-weight="900" fill="#0f172a" text-anchor="middle">
+    🇧🇷 🔮 PREVISÃO & ORÁCULO 2026
+  </text>
+
+  <!-- Title -->
+  <text x="140" y="380" font-family="system-ui, sans-serif" font-size="52" font-weight="900" fill="#ffffff">
+    O Sol (XIX): Revelação do Dia!
+  </text>
+  <text x="140" y="470" font-family="system-ui, sans-serif" font-size="28" font-weight="500" fill="#cbd5e1">
+    Clareza mental, prosperidade e cupom desbloqueado.
+  </text>
+
+  <!-- CTA Box -->
+  <rect x="140" y="650" width="800" height="180" rx="20" fill="rgba(255,255,255,0.07)" stroke="#fbbf24" stroke-width="2" />
+  <text x="540" y="720" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#ffffff" text-anchor="middle">
+    💬 COMMENT KEYWORD BELOW:
+  </text>
+
+  <rect x="360" y="750" width="360" height="56" rx="28" fill="#fbbf24" />
+  <text x="540" y="788" font-family="system-ui, sans-serif" font-size="30" font-weight="900" fill="#0f172a" text-anchor="middle" letter-spacing="2">
+    "TAROT"
+  </text>
+
+  <text x="540" y="930" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#94a3b8" text-anchor="middle">
+    ⚡ ManyChat 24/7 Multi-Language Bot • aquitemachadinhos.com.br/links
+  </text>
+</svg>
