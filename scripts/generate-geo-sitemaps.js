@@ -47,7 +47,15 @@ const HUBS = [
   'mundial',
   'comunidade-vip',
   'newsletter',
-  'entretenimento'
+  'entretenimento',
+  'links',
+  'bio',
+  'tags/cupons-shopee-hoje.html',
+  'tags/hoteis-gramado-booking-desconto.html',
+  'tags/nordvpn-cupom-74-off.html',
+  'tags/cursos-ia-udemy-desconto.html',
+  'tags/barretos-2027-ingressos-hoteis.html',
+  'tags/tarot-3d-previsao-gratis.html'
 ];
 
 function buildUrlNode(loc, priority = '0.8', changefreq = 'daily') {
