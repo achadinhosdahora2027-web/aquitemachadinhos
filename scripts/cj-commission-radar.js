@@ -12,6 +12,7 @@ const path = require('path');
 const { notifyAffiliateSale } = require('../lib/telegram/notify-engine');
 
 const CJ_TOKEN = process.env.CJ_ACCESS_TOKEN || '';
+const CJ_CID = process.env.CJ_CID || '8041957';
 const SUPA_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
@@ -59,9 +60,9 @@ function pick(block, tag) {
   // Janela: últimos 3 dias (o dedupe por order_id impede repetição de alerta)
   const fmt = (d) => d.toISOString().slice(0, 10);
   const end = fmt(new Date());
-  const start = fmt(new Date(Date.now() - 3 * 24 * 3600 * 1000));
+  const start = fmt(new Date(Date.now() - 7 * 24 * 3600 * 1000));
 
-  const url = `https://commission-detail.api.cj.com/v3/commissions?date-type=event_date&start-date=${start}&end-date=${end}`;
+  const url = `https://commission-detail.api.cj.com/v3/commissions?date-type=event&start-date=${start}&end-date=${end}&requestor-cid=${CJ_CID}`;
   const res = await httpGet(url, { Authorization: `Bearer ${CJ_TOKEN}` });
 
   if (res.status === 401) {
