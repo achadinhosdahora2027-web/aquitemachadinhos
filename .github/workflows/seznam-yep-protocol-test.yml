@@ -1,0 +1,50 @@
+name: Seznam & Yep Protocol Test (on-demand)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Testar endpoints diretos (formatos GET e POST corretos)
+        run: |
+          KEY="8469089b876439517e6c5247573c6e21"
+          URL="https://www.aquitemachadinhos.com.br/"
+          HOST="www.aquitemachadinhos.com.br"
+
+          echo "=== 1. SEZNAM GET (URL individual):"
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" --max-time 25 "https://search.seznam.com/indexnow?url=${URL}&key=${KEY}" || echo "sem resposta"
+
+          echo "=== 2. SEZNAM POST (batch JSON — formato oficial):"
+          curl -s --max-time 25 -X POST "https://search.seznam.com/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"host\":\"${HOST}\",\"key\":\"${KEY}\",\"urlList\":[\"${URL}\"]}" \
+            -w "\nHTTP %{http_code}\n" | head -c 300 || echo "sem resposta"
+
+          echo "=== 3. YEP GET:"
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" --max-time 25 "https://yep.com/indexnow?url=${URL}&key=${KEY}" || echo "sem resposta"
+
+          echo "=== 4. YEP POST (batch JSON):"
+          curl -s --max-time 25 -X POST "https://yep.com/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"host\":\"${HOST}\",\"key\":\"${KEY}\",\"urlList\":[\"${URL}\"]}" \
+            -w "\nHTTP %{http_code}\n" | head -c 300 || echo "sem resposta"
+
+          echo "=== 5. YEP GET com user-agent de navegador:"
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" --max-time 25 \
+            -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36" \
+            "https://yep.com/indexnow?url=${URL}&key=${KEY}" || echo "sem resposta"
+
+          echo "=== 6. REDE OFICIAL IndexNow POST (distribui para TODOS os parceiros):"
+          curl -s --max-time 25 -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "{\"host\":\"${HOST}\",\"key\":\"${KEY}\",\"urlList\":[\"${URL}\"]}" \
+            -w "\nHTTP %{http_code}\n" | head -c 300 || echo "sem resposta"
+
+          echo ""
+          echo "=== INTERPRETAÇÃO:"
+          echo "200/202 = aceito | 400/403 = recusado | 000 = inacessível"
