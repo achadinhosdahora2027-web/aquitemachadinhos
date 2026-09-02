@@ -406,5 +406,123 @@
     },
     "last_response_at": "2026-09-02T21:15:28.378Z",
     "measured_at": "2026-09-02T21:16:03.311Z"
+  },
+  "bing_webmaster_metrics": {
+    "data_source": "ssl.bing.com/webmaster/api.svc (API oficial)",
+    "measured_at": "2026-09-02T21:27:59.240Z",
+    "sites": {
+      "aquitemachadinhos.com.br": {
+        "verified": true,
+        "sitemaps": [
+          {
+            "url": "https://www.aquitemachadinhos.com.br/sitemap.xml",
+            "status": "Success",
+            "urls": 7,
+            "lastCrawled": "2026-09-01"
+          },
+          {
+            "url": "https://www.aquitemachadinhos.com.br/sitemap-mundial-paises.xml",
+            "status": "Success",
+            "urls": 240,
+            "lastCrawled": "2026-09-01"
+          },
+          {
+            "url": "https://www.aquitemachadinhos.com.br/sitemap-guias-turisticos.xml",
+            "status": "Success",
+            "urls": 13,
+            "lastCrawled": "2026-09-01"
+          }
+        ],
+        "crawl_last7d": {
+          "crawledPages": 662,
+          "errors": 19,
+          "code4xx": 17,
+          "code5xx": 0,
+          "blockedByRobotsTxt": 0
+        },
+        "crawlIssues": [],
+        "queries_30d": {
+          "clicks": 1,
+          "impressions": 2,
+          "top": [
+            {
+              "query": "achadinhos em barretos",
+              "clicks": 1,
+              "impressions": 1,
+              "pos": 1
+            },
+            {
+              "query": "barretos 2026 biometriafacial",
+              "clicks": 0,
+              "impressions": 1,
+              "pos": 3
+            }
+          ]
+        },
+        "submissionQuota": {
+          "usedToday": 0,
+          "daily": 100,
+          "monthly": 2900
+        }
+      },
+      "nexusplataforma.ia.br": {
+        "verified": true,
+        "sitemaps": [
+          {
+            "url": "https://nexusplataforma.ia.br/sitemap.xml",
+            "status": "Success",
+            "urls": 2,
+            "lastCrawled": "2026-09-01"
+          }
+        ],
+        "crawl_last7d": {
+          "crawledPages": 724,
+          "errors": 182,
+          "code4xx": 88,
+          "code5xx": 0,
+          "blockedByRobotsTxt": 254
+        },
+        "crawlIssues": [],
+        "queries_30d": {
+          "clicks": 0,
+          "impressions": 0,
+          "top": []
+        },
+        "submissionQuota": {
+          "usedToday": 0,
+          "daily": 100,
+          "monthly": 2900
+        }
+      },
+      "solvegrid.com.br": {
+        "verified": true,
+        "sitemaps": [
+          {
+            "url": "https://solvegrid.com.br/sitemap.xml",
+            "status": "Success",
+            "urls": 2,
+            "lastCrawled": "2026-09-01"
+          }
+        ],
+        "crawl_last7d": {
+          "crawledPages": 95,
+          "errors": 2,
+          "code4xx": 1,
+          "code5xx": 0,
+          "blockedByRobotsTxt": 0
+        },
+        "crawlIssues": [],
+        "queries_30d": {
+          "clicks": 0,
+          "impressions": 0,
+          "top": []
+        },
+        "submissionQuota": {
+          "usedToday": 0,
+          "daily": 100,
+          "monthly": 2900
+        }
+      }
+    }
   }
 }
