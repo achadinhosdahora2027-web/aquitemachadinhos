@@ -86,6 +86,30 @@ async function runMultiEngineGlobalPinger() {
   }
   const results = await Promise.all(jobs);
 
+  // POST em lote para a REDE OFICIAL (api.indexnow.org distribui para todos os parceiros —
+  // é por aqui que Seznam e demais recebem quando o endpoint direto bloqueia nossa região)
+  // Um lote POR domínio (a rede exige host único no urlList)
+  const batchPost = (domain) => new Promise((resolve) => {
+    const body = JSON.stringify({ host: new URL(domain).hostname, key: KEY, urlList: [`${domain}/`] });
+    const req = https.request({ hostname: 'api.indexnow.org', path: '/indexnow', method: 'POST', timeout: 15000,
+      headers: { 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': Buffer.byteLength(body) } }, (res) => {
+      res.resume();
+      res.on('end', () => resolve({ httpStatus: res.statusCode }));
+    });
+    req.on('error', () => resolve({ httpStatus: 0 }));
+    req.on('timeout', () => { req.destroy(); resolve({ httpStatus: 408 }); });
+    req.write(body);
+    req.end();
+  });
+
+  const batchResults = await Promise.all(DOMAINS.map(batchPost));
+  for (let i = 0; i < DOMAINS.length; i++) {
+    const b = batchResults[i];
+    const ok = b.httpStatus === 200 || b.httpStatus === 202;
+    await logResponse({ engine: 'IndexNow-Rede-Lote', httpStatus: b.httpStatus, pageUrl: `${DOMAINS[i]}/ (lote)` });
+    console.log(`  [Lote ${i + 1}/${DOMAINS.length}] ${DOMAINS[i]} → rede oficial ${ok ? '✅ ACEITO (distribui p/ todos os parceiros)' : '❌'} (HTTP ${b.httpStatus})`);
+  }
+
   const logResults = await Promise.all(results.map(logResponse));
 
   let accepted = 0, rejected = 0, errored = 0;
