@@ -56,11 +56,11 @@ function rolloverDailyMetricsIfNeeded(ledger) {
     const historyEntry = {
       date: lastDate,
       day_number: ledger.sprint_day || 1,
-      pageviews: prevMetrics.pageviews_today || 1420,
-      unique_visitors: prevMetrics.unique_visitors_today || 620,
-      sales_count: prevMetrics.sales_count_today || 1,
-      commissions_brl: prevMetrics.commissions_today_brl || 12.34,
-      ads_estimated_brl: 30.62,
+      pageviews: prevMetrics.pageviews_today || 0,
+      unique_visitors: prevMetrics.unique_visitors_today || 0,
+      sales_count: prevMetrics.sales_count_today || 0,
+      commissions_brl: prevMetrics.commissions_today_brl || 0,
+      ads_estimated_brl: 0,
       archived_at: new Date().toISOString()
     };
 
@@ -70,10 +70,10 @@ function rolloverDailyMetricsIfNeeded(ledger) {
       tracking.daily_history.push(historyEntry);
     }
 
-    // Initialize new day
+    // Initialize new day — SEMPRE com zero (nenhum número fabricado)
     tracking.current_date = todayStr;
-    const basePv = Math.floor(1800 + Math.random() * 150); // Live base calibration for today
-    const baseUv = Math.floor(basePv * 0.42);
+    const basePv = 0;
+    const baseUv = 0;
 
     tracking.today_metrics = {
       date: todayStr,
@@ -136,10 +136,6 @@ module.exports = async (req, res) => {
 
   if (type === 'pageview') {
     today.pageviews_today = (today.pageviews_today || 0) + 1;
-    // Estimate unique visitor ratio
-    if (Math.random() < 0.42) {
-      today.unique_visitors_today = (today.unique_visitors_today || 0) + 1;
-    }
     today.daily_pageviews_progress_percent = Number(((today.pageviews_today / (today.daily_target_pageviews || 4048)) * 100).toFixed(1));
     
     // Update sprint cumulative
@@ -148,10 +144,31 @@ module.exports = async (req, res) => {
     sprint.sprint_pageviews_progress_percent = Number(((sprint.cumulative_pageviews / 85000) * 100).toFixed(2));
   } else if (type === 'click') {
     if (!ledger.cumulative_telemetry) ledger.cumulative_telemetry = {};
-    ledger.cumulative_telemetry.total_clicks = (ledger.cumulative_telemetry.total_clicks || 330) + 1;
+    ledger.cumulative_telemetry.total_clicks = (ledger.cumulative_telemetry.total_clicks || 0) + 1;
   }
 
   saveLedger(ledger);
+
+  // Persistência real e auditável do evento no Supabase (fonte da verdade externa).
+  // Usa a anon key já configurada no projeto (policy de INSERT pública) e
+  // Prefer: return=minimal (evita o bloqueio da policy de SELECT).
+  try {
+    const supaUrl = process.env.SUPABASE_URL;
+    const supaKey = process.env.SUPABASE_ANON_KEY;
+    if (supaUrl && supaKey && process.env.SUPABASE_PERSIST !== 'off') {
+      const eventType = String(type).toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 40) || 'event';
+      await fetch(`${supaUrl.replace(/\/$/, '')}/rest/v1/metrics_events`, {
+        method: 'POST',
+        headers: {
+          apikey: supaKey,
+          Authorization: `Bearer ${supaKey}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify({ tipo: eventType })
+      }).catch(() => {});
+    }
+  } catch (e) {}
 
   return res.status(200).json({
     ok: true,

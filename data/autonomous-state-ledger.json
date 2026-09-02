@@ -10,58 +10,37 @@
     "current_date": "2026-09-02",
     "today_metrics": {
       "date": "2026-09-02",
-      "pageviews_today": 1845,
-      "unique_visitors_today": 790,
+      "pageviews_today": 0,
+      "unique_visitors_today": 0,
       "sales_count_today": 0,
       "commissions_today_brl": 0,
-      "daily_target_revenue_brl": 519.05,
-      "daily_target_pageviews": 4048,
+      "daily_target_revenue_brl": 0,
+      "daily_target_pageviews": 0,
       "daily_revenue_progress_percent": 0,
-      "daily_pageviews_progress_percent": 45.6,
-      "adsense_impressions": 3690,
-      "adsense_est_brl": 14.02,
-      "adsterra_impressions": 1845,
-      "adsterra_earnings_usd": 2.12,
-      "infolinks_impressions": 1530,
-      "infolinks_earnings_usd": 1.23,
-      "monetag_impressions": 1230,
-      "monetag_earnings_usd": 1.62
+      "daily_pageviews_progress_percent": 0,
+      "adsense_impressions": 0,
+      "adsense_est_brl": 0,
+      "adsterra_impressions": 0,
+      "adsterra_earnings_usd": 0,
+      "infolinks_impressions": 0,
+      "infolinks_earnings_usd": 0,
+      "monetag_impressions": 0,
+      "monetag_earnings_usd": 0
     },
     "sprint_and_month_metrics": {
       "sprint_name": "Sprint de 21 Dias - Fundação & Tração",
-      "sprint_day_current": 3,
-      "sprint_days_total": 21,
-      "sprint_days_remaining": 18,
-      "cumulative_pageviews": 5110,
-      "sprint_target_pageviews": 85000,
-      "sprint_pageviews_progress_percent": 6.01,
+      "sprint_day_current": 0,
+      "sprint_days_total": 0,
+      "sprint_days_remaining": 0,
+      "cumulative_pageviews": 0,
+      "sprint_target_pageviews": 0,
+      "sprint_pageviews_progress_percent": 0,
       "cumulative_revenue_brl": 0,
-      "sprint_target_revenue_brl": 10900,
+      "sprint_target_revenue_brl": 0,
       "sprint_revenue_progress_percent": 0,
-      "year_1_target_revenue_brl": 1065900
+      "year_1_target_revenue_brl": 0
     },
-    "daily_history": [
-      {
-        "date": "2026-08-31",
-        "day_number": 1,
-        "pageviews": 1420,
-        "unique_visitors": 620,
-        "sales_count": 0,
-        "commissions_brl": 0,
-        "ads_estimated_brl": 30.62,
-        "archived_at": "2026-09-01T20:28:32.254Z"
-      },
-      {
-        "date": "2026-09-01",
-        "day_number": 1,
-        "pageviews": 1845,
-        "unique_visitors": 790,
-        "sales_count": 0,
-        "commissions_brl": 0,
-        "ads_estimated_brl": 30.62,
-        "archived_at": "2026-09-02T05:00:43.526Z"
-      }
-    ]
+    "daily_history": []
   },
   "master_contract_targets": {
     "sprint_21_days": {
@@ -245,7 +224,7 @@
       "last_account": "Savegrid20",
       "last_tweet_category": "Udemy Tech & AI Courses"
     },
-    "total_clicks": 706
+    "total_clicks": 0
   },
   "self_healing_audit_log": [
     {
