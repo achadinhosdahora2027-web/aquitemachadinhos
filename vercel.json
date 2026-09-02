@@ -28,6 +28,7 @@
     }
   ],
   "rewrites": [
+    { "source": "/api/cron-autopilot", "destination": "/api/cron?job=vercel-autopilot" },
     { "source": "/radar-mundial", "destination": "/radar-mundial.html" },
     { "source": "/mundial", "destination": "/mundial.html" },
     { "source": "/entretenimento", "destination": "/entretenimento.html" },
