@@ -105,6 +105,15 @@ async function runTwitterPublisher() {
   console.log('\n3. Publicando no Twitter / X API v2...');
   const publishResult = await publishTweet(selectedTweet.text);
 
+  const oa2 = global.__lastOAuth2Attempt;
+  if (!publishResult.published && oa2) {
+    console.log(`  🔍 Diagnóstico OAuth2 → HTTP ${oa2.statusCode}${oa2.error ? ' | ' + oa2.error : ''}`);
+  }
+  if (!publishResult.published) {
+    const det = publishResult.response ? (publishResult.response.detail || publishResult.response.title || JSON.stringify(publishResult.response).slice(0, 160)) : (publishResult.error || '—');
+    console.log(`  🔍 Diagnóstico OAuth1 → HTTP ${publishResult.statusCode ?? '—'} | ${det}`);
+  }
+
   if (publishResult.published) {
     console.log(`  🎉 TWEET PUBLICADO COM SUCESSO! ID: ${publishResult.tweet_id}`);
   } else if (publishResult.queued) {
