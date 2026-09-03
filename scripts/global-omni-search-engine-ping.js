@@ -15,12 +15,9 @@ const KEY = 'a120ccc82c4e2dbeeda51d4cd6d03284e2909f92f101984a2133e567b748455c';
 
 function getAquiTemAchadinhosUrls() {
   const publicDir = path.join(__dirname, '../public');
+  // Auditoria 03/09/2026: so sitemaps cujas URLs existem (cidades-brasil, dados, growth, guias-cidades removidos: 100% 404)
   const sitemapFiles = [
-    'sitemap-cidades-brasil.xml',
     'sitemap-compatibilidade-signos.xml',
-    'sitemap-dados.xml',
-    'sitemap-growth.xml',
-    'sitemap-guias-cidades.xml',
     'sitemap-guias-turisticos.xml',
     'sitemap-mundial-paises.xml',
     'sitemap.xml'

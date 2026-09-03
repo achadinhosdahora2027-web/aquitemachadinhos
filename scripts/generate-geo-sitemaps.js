@@ -34,6 +34,9 @@ const SIGNS = [
 ];
 
 // 3. Tourism Hubs & Seasonal Events
+// Paginas internacionais que existem em public/{cc}/ (verificadas na auditoria)
+const COUNTRY_PAGES = ['fr/paris', 'jp/tokyo', 'pt/lisbon', 'us/new-york'];
+
 const HUBS = [
   'natal-luz-2026',
   'o-que-fazer-em-gramado',
@@ -50,12 +53,12 @@ const HUBS = [
   'entretenimento',
   'links',
   'bio',
-  'tags/cupons-shopee-hoje.html',
-  'tags/hoteis-gramado-booking-desconto.html',
-  'tags/nordvpn-cupom-74-off.html',
-  'tags/cursos-ia-udemy-desconto.html',
-  'tags/barretos-2027-ingressos-hoteis.html',
-  'tags/tarot-3d-previsao-gratis.html'
+  'tags/cupons-shopee-hoje',
+  'tags/hoteis-gramado-booking-desconto',
+  'tags/nordvpn-cupom-74-off',
+  'tags/cursos-ia-udemy-desconto',
+  'tags/barretos-2027-ingressos-hoteis',
+  'tags/tarot-3d-previsao-gratis'
 ];
 
 function buildUrlNode(loc, priority = '0.8', changefreq = 'daily') {
@@ -65,13 +68,14 @@ function buildUrlNode(loc, priority = '0.8', changefreq = 'daily') {
 // A. Generate sitemap-mundial-paises.xml
 function generateCountriesSitemap() {
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
-  COUNTRIES.forEach(c => {
-    xml += buildUrlNode(`${DOMAIN}/${c}/index.html`, '0.85', 'hourly');
-    xml += buildUrlNode(`${DOMAIN}/mundial?country=${c.toUpperCase()}`, '0.80', 'daily');
+  // Auditoria 03/09/2026: /{cc}/index.html nao existe (120 x 404) e /mundial?country=XX tem canonical
+  // para /mundial (nao indexa). Sitemap de paises passa a listar so as paginas internacionais que existem.
+  COUNTRY_PAGES.forEach(pg => {
+    xml += buildUrlNode(`${DOMAIN}/${pg}`, '0.85', 'weekly');
   });
   xml += `</urlset>`;
   fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap-mundial-paises.xml'), xml);
-  console.log(`✓ sitemap-mundial-paises.xml gerado (${COUNTRIES.length * 2} URLs)`);
+  console.log(`✓ sitemap-mundial-paises.xml gerado (${COUNTRY_PAGES.length} URLs reais)`);
 }
 
 // B. Generate sitemap-compatibilidade-signos.xml (144 Combinations)
@@ -79,7 +83,7 @@ function generateCompatibilitySitemap() {
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
   SIGNS.forEach(s1 => {
     SIGNS.forEach(s2 => {
-      xml += buildUrlNode(`${DOMAIN}/compatibilidade/${s1}-e-${s2}.html`, '0.90', 'daily');
+      xml += buildUrlNode(`${DOMAIN}/compatibilidade/${s1}-e-${s2}`, '0.90', 'weekly');
     });
   });
   xml += `</urlset>`;
@@ -100,14 +104,14 @@ function generateGuidesSitemap() {
 
 // D. Generate sitemap-index.xml (Master Index)
 function generateMasterIndex() {
+  // Auditoria 03/09/2026: removidos sitemap-cidades-brasil (64/64 404), sitemap-guias-cidades (20/20 404),
+  // sitemap-growth (2/2 404), sitemap-dados (3/3 404) e os 4 "10k" (~21.500 URLs inexistentes).
+  // So entram sitemaps cujas URLs respondem 200.
   const SITEMAPS = [
     'sitemap.xml',
     'sitemap-guias-turisticos.xml',
     'sitemap-compatibilidade-signos.xml',
-    'sitemap-mundial-paises.xml',
-    'sitemap-cidades-brasil.xml',
-    'sitemap-growth.xml',
-    'sitemap-dados.xml'
+    'sitemap-mundial-paises.xml'
   ];
 
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
