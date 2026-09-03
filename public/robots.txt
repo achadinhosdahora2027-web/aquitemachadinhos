@@ -76,7 +76,6 @@ Allow: /
 # ------------------------------------------------------------------------------
 Sitemap: https://www.aquitemachadinhos.com.br/sitemap-index.xml
 Sitemap: https://www.aquitemachadinhos.com.br/sitemap.xml
-Sitemap: https://www.aquitemachadinhos.com.br/sitemap-compatibilidade-signos.xml
 Sitemap: https://www.aquitemachadinhos.com.br/sitemap-mundial-paises.xml
 Sitemap: https://www.aquitemachadinhos.com.br/sitemap-guias-turisticos.xml
 

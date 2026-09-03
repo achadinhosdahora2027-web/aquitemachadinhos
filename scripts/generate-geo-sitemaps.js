@@ -39,12 +39,10 @@ const COUNTRY_PAGES = ['fr/paris', 'jp/tokyo', 'pt/lisbon', 'us/new-york'];
 
 const HUBS = [
   'natal-luz-2026',
-  'o-que-fazer-em-gramado',
-  'oktoberfest-blumenau-2026',
-  'rock-in-rio-2026',
-  'black-friday-2026-cupons',
-  'cirio-de-nazare-belem-2026',
-  'festa-do-peao-barretos-2027-ingressos',
+  // AUDITORIA 2026-09-03 (correção #3 Natal Luz): 6 páginas duplicadas removidas do sitemap.
+  // Estavam aqui e o gerador as re-adicionava a cada rodada (autopilot 4h). Mantidas noindex no HTML.
+  // 'o-que-fazer-em-gramado', 'oktoberfest-blumenau-2026', 'rock-in-rio-2026',
+  // 'black-friday-2026-cupons', 'cirio-de-nazare-belem-2026', 'festa-do-peao-barretos-2027-ingressos',
   'transportes',
   'radar-mundial',
   'mundial',
@@ -110,7 +108,7 @@ function generateMasterIndex() {
   const SITEMAPS = [
     'sitemap.xml',
     'sitemap-guias-turisticos.xml',
-    'sitemap-compatibilidade-signos.xml',
+    // AUDITORIA 2026-09-03: sitemap-compatibilidade-signos.xml removido (144 doorway pages noindex).
     'sitemap-mundial-paises.xml'
   ];
 
@@ -127,7 +125,10 @@ function run() {
   console.log('--- GERANDO E ATUALIZANDO SITEMAPS GEO-ESTRATÉGICOS 2026 ---');
   generateMasterIndex();
   generateGuidesSitemap();
-  generateCompatibilitySitemap();
+  // AUDITORIA 2026-09-03 (RESTANTE #2 thin/doorway): generateCompatibilitySitemap() desativado.
+  // Gerava 144 páginas /compatibilidade/{signo}-e-{signo} de 154 palavras idênticas (template puro)
+  // = doorway/scaled-content. Páginas marcadas noindex e sitemap removido. Não recriar.
+  // generateCompatibilitySitemap();
   generateCountriesSitemap();
   console.log('--- TODOS OS SITEMAPS ATUALIZADOS COM SUCESSO! ---');
 }
