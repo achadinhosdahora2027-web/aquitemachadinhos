@@ -220,6 +220,21 @@
   },
   "self_healing_audit_log": [
     {
+      "timestamp": "2026-09-03T02:54:38.810Z",
+      "action": "CJ_PIXEL_HIGH_PRIORITY_UPGRADE",
+      "result": "235 páginas HTML blindadas com disparo imediato de pixels CJ (PID correto por site) e zero bloqueio lazy-load."
+    },
+    {
+      "timestamp": "2026-09-03T02:54:38.742Z",
+      "action": "CJ_PIXEL_HIGH_PRIORITY_UPGRADE",
+      "result": "235 páginas HTML blindadas com disparo imediato de pixels CJ (PID correto por site) e zero bloqueio lazy-load."
+    },
+    {
+      "timestamp": "2026-09-03T02:53:36.637Z",
+      "action": "CJ_PIXEL_HIGH_PRIORITY_UPGRADE",
+      "result": "235 páginas HTML blindadas com disparo imediato de pixels CJ (PID correto por site) e zero bloqueio lazy-load."
+    },
+    {
       "timestamp": "2026-09-02T21:16:03.311Z",
       "action": "HONEST_TELEMETRY_V2",
       "result": "Painel reconstruído com leitura direta do banco: 8 PVs reais no sprint, R$ 0.00 confirmados. Zero números chumbados."
@@ -252,7 +267,7 @@
     {
       "timestamp": "2026-09-02T03:09:41.858Z",
       "action": "OMNI_HEALING_WATCHDOG_CRO_ENRICHMENT",
-      "result": "235 páginas HTML blindadas com Exit-Intent, CRO Sticky Bar, Pixels CJ 8041957, AdSense, Monetag e Infolinks."
+      "result": "235 páginas HTML blindadas com Exit-Intent, CRO Sticky Bar, Pixels CJ (PIDs reais), AdSense, Monetag e Infolinks."
     },
     {
       "timestamp": "2026-09-02T02:04:40.363Z",

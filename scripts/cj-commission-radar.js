@@ -12,7 +12,7 @@ const path = require('path');
 const { notifyAffiliateSale } = require('../lib/telegram/notify-engine');
 
 const CJ_TOKEN = process.env.CJ_ACCESS_TOKEN || '';
-const CJ_CID = process.env.CJ_CID || '8041957';
+const CJ_CID = process.env.CJ_CID || '8041957'; // CID = empresa (correto aqui). PIDs dos sites: 101859672 / 101870639 / 101870640
 const SUPA_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const SUPA_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY || '';
 
