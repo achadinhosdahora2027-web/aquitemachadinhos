@@ -36,6 +36,7 @@
     { "source": "/us/new-york", "destination": "/us/new-york.html" },
     { "source": "/fr/paris", "destination": "/fr/paris.html" },
     { "source": "/fr/lyon", "destination": "/fr/lyon.html" },
+    { "source": "/fr/saint-etienne", "destination": "/fr/saint-etienne.html" },
     { "source": "/jp/tokyo", "destination": "/jp/tokyo.html" },
     { "source": "/pt/lisbon", "destination": "/pt/lisbon.html" },
     { "source": "/it/rome", "destination": "/it/rome.html" },
