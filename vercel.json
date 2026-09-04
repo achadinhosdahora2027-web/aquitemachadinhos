@@ -424,6 +424,10 @@
     {
       "source": "/it/laquila",
       "destination": "/it/laquila.html"
+    },
+    {
+      "source": "/it/teramo",
+      "destination": "/it/teramo.html"
     }
   ]
 }
