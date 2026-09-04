@@ -12,36 +12,410 @@
     {
       "source": "/sw.js",
       "headers": [
-        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
-        { "key": "Service-Worker-Allowed", "value": "/" },
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        {
+          "key": "Content-Type",
+          "value": "application/javascript; charset=utf-8"
+        },
+        {
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
       ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "Strict-Transport-Security", "value": "max-age=63072000; includeSubDomains; preload" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        }
       ]
     }
   ],
   "rewrites": [
-    { "source": "/api/cron-autopilot", "destination": "/api/cron?job=vercel-autopilot" },
-    { "source": "/radar-mundial", "destination": "/radar-mundial.html" },
-    { "source": "/mundial", "destination": "/mundial.html" },
-    { "source": "/entretenimento", "destination": "/entretenimento.html" },
-    { "source": "/transportes", "destination": "/transportes.html" },
-    { "source": "/us/new-york", "destination": "/us/new-york.html" },
-    { "source": "/fr/paris", "destination": "/fr/paris.html" },
-    { "source": "/fr/lyon", "destination": "/fr/lyon.html" },
-    { "source": "/fr/saint-etienne", "destination": "/fr/saint-etienne.html" },
-    { "source": "/jp/tokyo", "destination": "/jp/tokyo.html" },
-    { "source": "/pt/lisbon", "destination": "/pt/lisbon.html" },
-    { "source": "/it/rome", "destination": "/it/rome.html" },
-    { "source": "/es/barcelona", "destination": "/es/barcelona.html" },
-    { "source": "/ar/buenos-aires", "destination": "/ar/buenos-aires.html" },
-    { "source": "/nl/amsterdam", "destination": "/nl/amsterdam.html" }
+    {
+      "source": "/us/new-york",
+      "destination": "/us/new-york.html"
+    },
+    {
+      "source": "/transportes",
+      "destination": "/transportes.html"
+    },
+    {
+      "source": "/radar-mundial",
+      "destination": "/radar-mundial.html"
+    },
+    {
+      "source": "/pt/lisbon",
+      "destination": "/pt/lisbon.html"
+    },
+    {
+      "source": "/nl/amsterdam",
+      "destination": "/nl/amsterdam.html"
+    },
+    {
+      "source": "/mundial",
+      "destination": "/mundial.html"
+    },
+    {
+      "source": "/jp/tokyo",
+      "destination": "/jp/tokyo.html"
+    },
+    {
+      "source": "/it/rome",
+      "destination": "/it/rome.html"
+    },
+    {
+      "source": "/es/barcelona",
+      "destination": "/es/barcelona.html"
+    },
+    {
+      "source": "/entretenimento",
+      "destination": "/entretenimento.html"
+    },
+    {
+      "source": "/ar/buenos-aires",
+      "destination": "/ar/buenos-aires.html"
+    },
+    {
+      "source": "/api/cron-autopilot",
+      "destination": "/api/cron?job=vercel-autopilot"
+    },
+    {
+      "source": "/api/cron-autopilot",
+      "destination": "/api/cron?job=vercel-autopilot"
+    },
+    {
+      "source": "/radar-mundial",
+      "destination": "/radar-mundial.html"
+    },
+    {
+      "source": "/mundial",
+      "destination": "/mundial.html"
+    },
+    {
+      "source": "/entretenimento",
+      "destination": "/entretenimento.html"
+    },
+    {
+      "source": "/transportes",
+      "destination": "/transportes.html"
+    },
+    {
+      "source": "/us/new-york",
+      "destination": "/us/new-york.html"
+    },
+    {
+      "source": "/fr/paris",
+      "destination": "/fr/paris.html"
+    },
+    {
+      "source": "/fr/lyon",
+      "destination": "/fr/lyon.html"
+    },
+    {
+      "source": "/fr/saint-etienne",
+      "destination": "/fr/saint-etienne.html"
+    },
+    {
+      "source": "/jp/tokyo",
+      "destination": "/jp/tokyo.html"
+    },
+    {
+      "source": "/pt/lisbon",
+      "destination": "/pt/lisbon.html"
+    },
+    {
+      "source": "/it/rome",
+      "destination": "/it/rome.html"
+    },
+    {
+      "source": "/es/barcelona",
+      "destination": "/es/barcelona.html"
+    },
+    {
+      "source": "/ar/buenos-aires",
+      "destination": "/ar/buenos-aires.html"
+    },
+    {
+      "source": "/nl/amsterdam",
+      "destination": "/nl/amsterdam.html"
+    },
+    {
+      "source": "/fr/aix-en-provence",
+      "destination": "/fr/aix-en-provence.html"
+    },
+    {
+      "source": "/fr/ajaccio",
+      "destination": "/fr/ajaccio.html"
+    },
+    {
+      "source": "/fr/amiens",
+      "destination": "/fr/amiens.html"
+    },
+    {
+      "source": "/fr/angers",
+      "destination": "/fr/angers.html"
+    },
+    {
+      "source": "/fr/annecy",
+      "destination": "/fr/annecy.html"
+    },
+    {
+      "source": "/fr/argenteuil",
+      "destination": "/fr/argenteuil.html"
+    },
+    {
+      "source": "/fr/avignon",
+      "destination": "/fr/avignon.html"
+    },
+    {
+      "source": "/fr/bastia",
+      "destination": "/fr/bastia.html"
+    },
+    {
+      "source": "/fr/belfort",
+      "destination": "/fr/belfort.html"
+    },
+    {
+      "source": "/fr/besancon",
+      "destination": "/fr/besancon.html"
+    },
+    {
+      "source": "/fr/beziers",
+      "destination": "/fr/beziers.html"
+    },
+    {
+      "source": "/fr/bordeaux",
+      "destination": "/fr/bordeaux.html"
+    },
+    {
+      "source": "/fr/boulogne-billancourt",
+      "destination": "/fr/boulogne-billancourt.html"
+    },
+    {
+      "source": "/fr/bourges",
+      "destination": "/fr/bourges.html"
+    },
+    {
+      "source": "/fr/brest",
+      "destination": "/fr/brest.html"
+    },
+    {
+      "source": "/fr/caen",
+      "destination": "/fr/caen.html"
+    },
+    {
+      "source": "/fr/calais",
+      "destination": "/fr/calais.html"
+    },
+    {
+      "source": "/fr/cannes",
+      "destination": "/fr/cannes.html"
+    },
+    {
+      "source": "/fr/cayenne",
+      "destination": "/fr/cayenne.html"
+    },
+    {
+      "source": "/fr/chalon-sur-saone",
+      "destination": "/fr/chalon-sur-saone.html"
+    },
+    {
+      "source": "/fr/clermont-ferrand",
+      "destination": "/fr/clermont-ferrand.html"
+    },
+    {
+      "source": "/fr/creteil",
+      "destination": "/fr/creteil.html"
+    },
+    {
+      "source": "/fr/dijon",
+      "destination": "/fr/dijon.html"
+    },
+    {
+      "source": "/fr/dunkerque",
+      "destination": "/fr/dunkerque.html"
+    },
+    {
+      "source": "/fr/fort-de-france",
+      "destination": "/fr/fort-de-france.html"
+    },
+    {
+      "source": "/fr/grenoble",
+      "destination": "/fr/grenoble.html"
+    },
+    {
+      "source": "/fr/la-rochelle",
+      "destination": "/fr/la-rochelle.html"
+    },
+    {
+      "source": "/fr/le-havre",
+      "destination": "/fr/le-havre.html"
+    },
+    {
+      "source": "/fr/le-mans",
+      "destination": "/fr/le-mans.html"
+    },
+    {
+      "source": "/fr/les-abymes",
+      "destination": "/fr/les-abymes.html"
+    },
+    {
+      "source": "/fr/lille",
+      "destination": "/fr/lille.html"
+    },
+    {
+      "source": "/fr/limoges",
+      "destination": "/fr/limoges.html"
+    },
+    {
+      "source": "/fr/lorient",
+      "destination": "/fr/lorient.html"
+    },
+    {
+      "source": "/fr/mamoudzou",
+      "destination": "/fr/mamoudzou.html"
+    },
+    {
+      "source": "/fr/marseille",
+      "destination": "/fr/marseille.html"
+    },
+    {
+      "source": "/fr/metz",
+      "destination": "/fr/metz.html"
+    },
+    {
+      "source": "/fr/montpellier",
+      "destination": "/fr/montpellier.html"
+    },
+    {
+      "source": "/fr/montreuil",
+      "destination": "/fr/montreuil.html"
+    },
+    {
+      "source": "/fr/mulhouse",
+      "destination": "/fr/mulhouse.html"
+    },
+    {
+      "source": "/fr/nancy",
+      "destination": "/fr/nancy.html"
+    },
+    {
+      "source": "/fr/nanterre",
+      "destination": "/fr/nanterre.html"
+    },
+    {
+      "source": "/fr/nantes",
+      "destination": "/fr/nantes.html"
+    },
+    {
+      "source": "/fr/nice",
+      "destination": "/fr/nice.html"
+    },
+    {
+      "source": "/fr/nimes",
+      "destination": "/fr/nimes.html"
+    },
+    {
+      "source": "/fr/orleans",
+      "destination": "/fr/orleans.html"
+    },
+    {
+      "source": "/fr/pau",
+      "destination": "/fr/pau.html"
+    },
+    {
+      "source": "/fr/perpignan",
+      "destination": "/fr/perpignan.html"
+    },
+    {
+      "source": "/fr/pointe-a-pitre",
+      "destination": "/fr/pointe-a-pitre.html"
+    },
+    {
+      "source": "/fr/poitiers",
+      "destination": "/fr/poitiers.html"
+    },
+    {
+      "source": "/fr/reims",
+      "destination": "/fr/reims.html"
+    },
+    {
+      "source": "/fr/rennes",
+      "destination": "/fr/rennes.html"
+    },
+    {
+      "source": "/fr/roubaix",
+      "destination": "/fr/roubaix.html"
+    },
+    {
+      "source": "/fr/rouen",
+      "destination": "/fr/rouen.html"
+    },
+    {
+      "source": "/fr/saint-denis",
+      "destination": "/fr/saint-denis.html"
+    },
+    {
+      "source": "/fr/saint-denis-reunion",
+      "destination": "/fr/saint-denis-reunion.html"
+    },
+    {
+      "source": "/fr/saint-nazaire",
+      "destination": "/fr/saint-nazaire.html"
+    },
+    {
+      "source": "/fr/saint-paul-reunion",
+      "destination": "/fr/saint-paul-reunion.html"
+    },
+    {
+      "source": "/fr/strasbourg",
+      "destination": "/fr/strasbourg.html"
+    },
+    {
+      "source": "/fr/toulon",
+      "destination": "/fr/toulon.html"
+    },
+    {
+      "source": "/fr/toulouse",
+      "destination": "/fr/toulouse.html"
+    },
+    {
+      "source": "/fr/tourcoing",
+      "destination": "/fr/tourcoing.html"
+    },
+    {
+      "source": "/fr/tours",
+      "destination": "/fr/tours.html"
+    },
+    {
+      "source": "/fr/vannes",
+      "destination": "/fr/vannes.html"
+    },
+    {
+      "source": "/fr/versailles",
+      "destination": "/fr/versailles.html"
+    },
+    {
+      "source": "/fr/villeurbanne",
+      "destination": "/fr/villeurbanne.html"
+    }
   ]
 }
