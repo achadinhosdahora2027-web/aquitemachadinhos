@@ -420,6 +420,10 @@
     {
       "source": "/it/pescara",
       "destination": "/it/pescara.html"
+    },
+    {
+      "source": "/it/laquila",
+      "destination": "/it/laquila.html"
     }
   ]
 }
