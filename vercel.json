@@ -432,6 +432,10 @@
     {
       "source": "/it/chieti",
       "destination": "/it/chieti.html"
+    },
+    {
+      "source": "/it/potenza",
+      "destination": "/it/potenza.html"
     }
   ]
 }
