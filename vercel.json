@@ -640,6 +640,218 @@
     {
       "source": "/it/cesena",
       "destination": "/it/cesena.html"
+    },
+    {
+      "source": "/it/imola",
+      "destination": "/it/imola.html"
+    },
+    {
+      "source": "/it/pisa",
+      "destination": "/it/pisa.html"
+    },
+    {
+      "source": "/it/siena",
+      "destination": "/it/siena.html"
+    },
+    {
+      "source": "/it/lucca",
+      "destination": "/it/lucca.html"
+    },
+    {
+      "source": "/it/pistoia",
+      "destination": "/it/pistoia.html"
+    },
+    {
+      "source": "/it/grosseto",
+      "destination": "/it/grosseto.html"
+    },
+    {
+      "source": "/it/frosinone",
+      "destination": "/it/frosinone.html"
+    },
+    {
+      "source": "/it/viterbo",
+      "destination": "/it/viterbo.html"
+    },
+    {
+      "source": "/it/rieti",
+      "destination": "/it/rieti.html"
+    },
+    {
+      "source": "/it/savona",
+      "destination": "/it/savona.html"
+    },
+    {
+      "source": "/it/imperia",
+      "destination": "/it/imperia.html"
+    },
+    {
+      "source": "/it/como",
+      "destination": "/it/como.html"
+    },
+    {
+      "source": "/it/monza",
+      "destination": "/it/monza.html"
+    },
+    {
+      "source": "/it/pavia",
+      "destination": "/it/pavia.html"
+    },
+    {
+      "source": "/it/cremona",
+      "destination": "/it/cremona.html"
+    },
+    {
+      "source": "/it/mantova",
+      "destination": "/it/mantova.html"
+    },
+    {
+      "source": "/it/lecco",
+      "destination": "/it/lecco.html"
+    },
+    {
+      "source": "/it/lodi",
+      "destination": "/it/lodi.html"
+    },
+    {
+      "source": "/it/sondrio",
+      "destination": "/it/sondrio.html"
+    },
+    {
+      "source": "/it/varese",
+      "destination": "/it/varese.html"
+    },
+    {
+      "source": "/it/macerata",
+      "destination": "/it/macerata.html"
+    },
+    {
+      "source": "/it/ascoli-piceno",
+      "destination": "/it/ascoli-piceno.html"
+    },
+    {
+      "source": "/it/fermo",
+      "destination": "/it/fermo.html"
+    },
+    {
+      "source": "/it/campobasso",
+      "destination": "/it/campobasso.html"
+    },
+    {
+      "source": "/it/isernia",
+      "destination": "/it/isernia.html"
+    },
+    {
+      "source": "/it/alessandria",
+      "destination": "/it/alessandria.html"
+    },
+    {
+      "source": "/it/cuneo",
+      "destination": "/it/cuneo.html"
+    },
+    {
+      "source": "/it/asti",
+      "destination": "/it/asti.html"
+    },
+    {
+      "source": "/it/biella",
+      "destination": "/it/biella.html"
+    },
+    {
+      "source": "/it/vercelli",
+      "destination": "/it/vercelli.html"
+    },
+    {
+      "source": "/it/verbania",
+      "destination": "/it/verbania.html"
+    },
+    {
+      "source": "/it/bari",
+      "destination": "/it/bari.html"
+    },
+    {
+      "source": "/it/taranto",
+      "destination": "/it/taranto.html"
+    },
+    {
+      "source": "/it/foggia",
+      "destination": "/it/foggia.html"
+    },
+    {
+      "source": "/it/lecce",
+      "destination": "/it/lecce.html"
+    },
+    {
+      "source": "/it/brindisi",
+      "destination": "/it/brindisi.html"
+    },
+    {
+      "source": "/it/andria",
+      "destination": "/it/andria.html"
+    },
+    {
+      "source": "/it/barletta",
+      "destination": "/it/barletta.html"
+    },
+    {
+      "source": "/it/trani",
+      "destination": "/it/trani.html"
+    },
+    {
+      "source": "/it/olbia",
+      "destination": "/it/olbia.html"
+    },
+    {
+      "source": "/it/nuoro",
+      "destination": "/it/nuoro.html"
+    },
+    {
+      "source": "/it/oristano",
+      "destination": "/it/oristano.html"
+    },
+    {
+      "source": "/it/messina",
+      "destination": "/it/messina.html"
+    },
+    {
+      "source": "/it/siracusa",
+      "destination": "/it/siracusa.html"
+    },
+    {
+      "source": "/it/ragusa",
+      "destination": "/it/ragusa.html"
+    },
+    {
+      "source": "/it/trapani",
+      "destination": "/it/trapani.html"
+    },
+    {
+      "source": "/it/agrigento",
+      "destination": "/it/agrigento.html"
+    },
+    {
+      "source": "/it/caltanissetta",
+      "destination": "/it/caltanissetta.html"
+    },
+    {
+      "source": "/it/enna",
+      "destination": "/it/enna.html"
+    },
+    {
+      "source": "/it/trento",
+      "destination": "/it/trento.html"
+    },
+    {
+      "source": "/it/belluno",
+      "destination": "/it/belluno.html"
+    },
+    {
+      "source": "/it/pordenone",
+      "destination": "/it/pordenone.html"
+    },
+    {
+      "source": "/it/gorizia",
+      "destination": "/it/gorizia.html"
     }
   ]
 }
