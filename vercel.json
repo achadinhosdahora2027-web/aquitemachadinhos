@@ -560,6 +560,46 @@
     {
       "source": "/it/rovigo",
       "destination": "/it/rovigo.html"
+    },
+    {
+      "source": "/it/torino",
+      "destination": "/it/torino.html"
+    },
+    {
+      "source": "/it/novara",
+      "destination": "/it/novara.html"
+    },
+    {
+      "source": "/it/genova",
+      "destination": "/it/genova.html"
+    },
+    {
+      "source": "/it/la-spezia",
+      "destination": "/it/la-spezia.html"
+    },
+    {
+      "source": "/it/roma",
+      "destination": "/it/roma.html"
+    },
+    {
+      "source": "/it/latina",
+      "destination": "/it/latina.html"
+    },
+    {
+      "source": "/it/cagliari",
+      "destination": "/it/cagliari.html"
+    },
+    {
+      "source": "/it/sassari",
+      "destination": "/it/sassari.html"
+    },
+    {
+      "source": "/it/palermo",
+      "destination": "/it/palermo.html"
+    },
+    {
+      "source": "/it/catania",
+      "destination": "/it/catania.html"
     }
   ]
 }
