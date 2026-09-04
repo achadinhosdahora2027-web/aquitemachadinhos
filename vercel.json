@@ -440,6 +440,46 @@
     {
       "source": "/it/matera",
       "destination": "/it/matera.html"
+    },
+    {
+      "source": "/it/reggio-calabria",
+      "destination": "/it/reggio-calabria.html"
+    },
+    {
+      "source": "/it/catanzaro",
+      "destination": "/it/catanzaro.html"
+    },
+    {
+      "source": "/it/cosenza",
+      "destination": "/it/cosenza.html"
+    },
+    {
+      "source": "/it/lamezia-terme",
+      "destination": "/it/lamezia-terme.html"
+    },
+    {
+      "source": "/it/crotone",
+      "destination": "/it/crotone.html"
+    },
+    {
+      "source": "/it/napoli",
+      "destination": "/it/napoli.html"
+    },
+    {
+      "source": "/it/salerno",
+      "destination": "/it/salerno.html"
+    },
+    {
+      "source": "/it/caserta",
+      "destination": "/it/caserta.html"
+    },
+    {
+      "source": "/it/benevento",
+      "destination": "/it/benevento.html"
+    },
+    {
+      "source": "/it/bologna",
+      "destination": "/it/bologna.html"
     }
   ]
 }
