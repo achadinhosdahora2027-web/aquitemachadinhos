@@ -416,6 +416,10 @@
     {
       "source": "/fr/villeurbanne",
       "destination": "/fr/villeurbanne.html"
+    },
+    {
+      "source": "/it/pescara",
+      "destination": "/it/pescara.html"
     }
   ]
 }
