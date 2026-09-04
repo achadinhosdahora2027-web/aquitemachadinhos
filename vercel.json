@@ -520,6 +520,46 @@
     {
       "source": "/it/bergamo",
       "destination": "/it/bergamo.html"
+    },
+    {
+      "source": "/it/brescia",
+      "destination": "/it/brescia.html"
+    },
+    {
+      "source": "/it/verona",
+      "destination": "/it/verona.html"
+    },
+    {
+      "source": "/it/padova",
+      "destination": "/it/padova.html"
+    },
+    {
+      "source": "/it/treviso",
+      "destination": "/it/treviso.html"
+    },
+    {
+      "source": "/it/venezia",
+      "destination": "/it/venezia.html"
+    },
+    {
+      "source": "/it/trieste",
+      "destination": "/it/trieste.html"
+    },
+    {
+      "source": "/it/udine",
+      "destination": "/it/udine.html"
+    },
+    {
+      "source": "/it/bolzano",
+      "destination": "/it/bolzano.html"
+    },
+    {
+      "source": "/it/vicenza",
+      "destination": "/it/vicenza.html"
+    },
+    {
+      "source": "/it/rovigo",
+      "destination": "/it/rovigo.html"
     }
   ]
 }
