@@ -600,6 +600,46 @@
     {
       "source": "/it/catania",
       "destination": "/it/catania.html"
+    },
+    {
+      "source": "/it/avellino",
+      "destination": "/it/avellino.html"
+    },
+    {
+      "source": "/it/modena",
+      "destination": "/it/modena.html"
+    },
+    {
+      "source": "/it/ravenna",
+      "destination": "/it/ravenna.html"
+    },
+    {
+      "source": "/it/rimini",
+      "destination": "/it/rimini.html"
+    },
+    {
+      "source": "/it/ferrara",
+      "destination": "/it/ferrara.html"
+    },
+    {
+      "source": "/it/forli",
+      "destination": "/it/forli.html"
+    },
+    {
+      "source": "/it/parma",
+      "destination": "/it/parma.html"
+    },
+    {
+      "source": "/it/piacenza",
+      "destination": "/it/piacenza.html"
+    },
+    {
+      "source": "/it/reggio-emilia",
+      "destination": "/it/reggio-emilia.html"
+    },
+    {
+      "source": "/it/cesena",
+      "destination": "/it/cesena.html"
     }
   ]
 }
