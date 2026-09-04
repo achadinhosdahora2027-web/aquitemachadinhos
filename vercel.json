@@ -480,6 +480,46 @@
     {
       "source": "/it/bologna",
       "destination": "/it/bologna.html"
+    },
+    {
+      "source": "/it/firenze",
+      "destination": "/it/firenze.html"
+    },
+    {
+      "source": "/it/prato",
+      "destination": "/it/prato.html"
+    },
+    {
+      "source": "/it/livorno",
+      "destination": "/it/livorno.html"
+    },
+    {
+      "source": "/it/arezzo",
+      "destination": "/it/arezzo.html"
+    },
+    {
+      "source": "/it/perugia",
+      "destination": "/it/perugia.html"
+    },
+    {
+      "source": "/it/terni",
+      "destination": "/it/terni.html"
+    },
+    {
+      "source": "/it/ancona",
+      "destination": "/it/ancona.html"
+    },
+    {
+      "source": "/it/pesaro",
+      "destination": "/it/pesaro.html"
+    },
+    {
+      "source": "/it/milano",
+      "destination": "/it/milano.html"
+    },
+    {
+      "source": "/it/bergamo",
+      "destination": "/it/bergamo.html"
     }
   ]
 }
