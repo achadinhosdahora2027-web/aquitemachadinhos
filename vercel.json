@@ -428,6 +428,10 @@
     {
       "source": "/it/teramo",
       "destination": "/it/teramo.html"
+    },
+    {
+      "source": "/it/chieti",
+      "destination": "/it/chieti.html"
     }
   ]
 }
