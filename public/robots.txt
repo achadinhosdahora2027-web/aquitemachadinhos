@@ -76,8 +76,6 @@ Allow: /
 # ------------------------------------------------------------------------------
 Sitemap: https://www.aquitemachadinhos.com.br/sitemap-index.xml
 Sitemap: https://www.aquitemachadinhos.com.br/sitemap.xml
-Sitemap: https://www.aquitemachadinhos.com.br/sitemap-mundial-paises.xml
-Sitemap: https://www.aquitemachadinhos.com.br/sitemap-guias-turisticos.xml
 
 # Block dynamic redirect query parameters to conserve Googlebot crawl budget
 Disallow: /api/ads/
