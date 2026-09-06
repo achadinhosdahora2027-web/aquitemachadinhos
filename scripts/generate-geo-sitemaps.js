@@ -39,10 +39,14 @@ const COUNTRY_PAGES = ['fr/paris', 'jp/tokyo', 'pt/lisbon', 'us/new-york'];
 
 const HUBS = [
   'natal-luz-2026',
-  // AUDITORIA 2026-09-03 (correção #3 Natal Luz): 6 páginas duplicadas removidas do sitemap.
-  // Estavam aqui e o gerador as re-adicionava a cada rodada (autopilot 4h). Mantidas noindex no HTML.
-  // 'o-que-fazer-em-gramado', 'oktoberfest-blumenau-2026', 'rock-in-rio-2026',
-  // 'black-friday-2026-cupons', 'cirio-de-nazare-belem-2026', 'festa-do-peao-barretos-2027-ingressos',
+  // ETAPA 8.1 (2026-09-06): as 6 páginas abaixo foram REESCRITAS com conteúdo real, único e
+  // verificado (scripts/etapa8_events.py + scripts/etapa8_validate_events.py). Voltam ao sitemap.
+  'o-que-fazer-em-gramado',
+  'oktoberfest-blumenau-2026',
+  'rock-in-rio-2026',
+  'black-friday-2026-cupons',
+  'cirio-de-nazare-belem-2026',
+  'festa-do-peao-barretos-2027-ingressos',
   'transportes',
   'radar-mundial',
   'mundial',
@@ -64,7 +68,15 @@ function buildUrlNode(loc, priority = '0.8', changefreq = 'daily') {
 }
 
 // A. Generate sitemap-mundial-paises.xml
+// ETAPA 8.1 TRAVA ANTI-DESTRUIÇÃO: o sitemap-mundial-paises.xml em disco contém 2.825 URLs
+// reais de cidades (Etapa 2.5/5). Esta função NUNCA pode reduzi-lo às 4 COUNTRY_PAGES.
+// Só escreve se o arquivo não existir (bootstrap); se existir, não toca.
 function generateCountriesSitemap() {
+  const target = path.join(PUBLIC_DIR, 'sitemap-mundial-paises.xml');
+  if (fs.existsSync(target)) {
+    console.log('⊘ sitemap-mundial-paises.xml preservado (2.825 URLs reais em disco; gerador bloqueado p/ não destruir — ETAPA 8.1)');
+    return;
+  }
   let xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
   // Auditoria 03/09/2026: /{cc}/index.html nao existe (120 x 404) e /mundial?country=XX tem canonical
   // para /mundial (nao indexa). Sitemap de paises passa a listar so as paginas internacionais que existem.
@@ -101,7 +113,15 @@ function generateGuidesSitemap() {
 }
 
 // D. Generate sitemap-index.xml (Master Index)
+// ETAPA 8.1 TRAVA ANTI-DESTRUIÇÃO: o sitemap-index.xml em disco referencia 1 filho
+// (sitemap.xml plano, decisão §4.6 do RELATORIO-INDEXACAO). Nunca reescrever com 3 filhos.
+// Só escreve se o arquivo não existir (bootstrap); se existir, não toca.
 function generateMasterIndex() {
+  const target = path.join(PUBLIC_DIR, 'sitemap-index.xml');
+  if (fs.existsSync(target)) {
+    console.log('⊘ sitemap-index.xml preservado (1 filho sitemap.xml; gerador bloqueado p/ não destruir — ETAPA 8.1)');
+    return;
+  }
   // Auditoria 03/09/2026: removidos sitemap-cidades-brasil (64/64 404), sitemap-guias-cidades (20/20 404),
   // sitemap-growth (2/2 404), sitemap-dados (3/3 404) e os 4 "10k" (~21.500 URLs inexistentes).
   // So entram sitemaps cujas URLs respondem 200.

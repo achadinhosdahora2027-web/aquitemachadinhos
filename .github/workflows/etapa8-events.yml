@@ -1,0 +1,77 @@
+name: Etapa 8.1 — Eventos (anti-regressão Natal Luz)
+
+# Guarda definitiva do bug "6 stubs repetindo Natal Luz": o gerador é determinístico
+# e o validador falha o CI em qualquer divergência. SEM `|| true` de propósito.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'public/*.html'
+      - 'public/sitemap*.xml'
+      - 'scripts/etapa8_*.py'
+      - 'scripts/generate-geo-sitemaps.js'
+  pull_request:
+    paths:
+      - 'public/*.html'
+      - 'public/sitemap*.xml'
+      - 'scripts/etapa8_*.py'
+      - 'scripts/generate-geo-sitemaps.js'
+  workflow_dispatch:
+
+jobs:
+  eventos:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Gerador idempotente (--check)
+        run: python3 scripts/etapa8_events.py --check
+
+      - name: Validador de eventos (unicidade, JSON-LD, afiliados)
+        run: python3 scripts/etapa8_validate_events.py
+
+      - name: Sitemap íntegro (XML + disco + sem noindex)
+        run: |
+          python3 - <<'EOF'
+          import re, xml.etree.ElementTree as ET
+          from pathlib import Path
+          NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}loc"
+          tree = ET.parse("public/sitemap.xml")
+          locs = [e.text for e in tree.getroot().iter(NS)]
+          DOM = "https://www.aquitemachadinhos.com.br"
+          bad = []
+          for u in locs:
+              path = u.replace(DOM, "").lstrip("/") or "index"
+              f = Path("public") / (path if path.endswith(".html") else path + ".html")
+              alt = Path("public") / path / "index.html"
+              fp = f if f.exists() else (alt if alt.exists() else None)
+              if fp is None:
+                  bad.append(f"missing: {u}")
+                  continue
+              head = fp.read_text(encoding="utf-8").lower().split("</head>")[0]
+              if 'name="robots"' in head and "noindex" in head:
+                  bad.append(f"noindex-in-sitemap: {u}")
+          if len(locs) != len(set(locs)):
+              bad.append("duplicated locs")
+          for s in ["oktoberfest-blumenau-2026", "cirio-de-nazare-belem-2026",
+                    "festa-do-peao-barretos-2027-ingressos", "rock-in-rio-2026",
+                    "natal-luz-2026", "o-que-fazer-em-gramado", "black-friday-2026-cupons"]:
+              if f"{DOM}/{s}" not in set(locs):
+                  bad.append(f"evento fora do sitemap: {s}")
+          print(f"sitemap.xml: {len(locs)} URLs verificadas")
+          if bad:
+              print("FALHAS:"); [print(" -", b) for b in bad]; raise SystemExit(1)
+          print("SITEMAP: OK")
+          EOF
+
+      - name: Travas do gerador de sitemaps presentes
+        run: |
+          grep -c "TRAVA ANTI-DESTRUIÇÃO" scripts/generate-geo-sitemaps.js | grep -q 2
+          node --check scripts/generate-geo-sitemaps.js
+          echo "TRAVAS: OK"
