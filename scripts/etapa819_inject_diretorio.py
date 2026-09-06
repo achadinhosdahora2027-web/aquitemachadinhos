@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ETAPA 8.19b — Injetor do bloco <!-- city-diretorio --> (diretório educacional/empresarial).
 
-Dados: out/etapa8_diretorio.jsonl (harvest 8.19: P131 na cidade; classes transitivas
+Dados: out/etapa8_diretorio.jsonl (harvest 8.19: P131 na cidade; classes diretas
 Q2385804 instituição de ensino / Q4830453 empresa). Nada inventado; onde não há dado, omite.
 Idempotente. Uso: python3 scripts/etapa819_inject_diretorio.py [--apply] [--limit N]
 """
@@ -14,7 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 PUB = ROOT / "public"
 DATA_F = ROOT / "out" / "etapa8_diretorio.jsonl"
-RAMO_PT = {"educacional": "instituições de ensino", "empresarial": "empresas com sede registrada"}
+RAMO_PT = {"educacional": "instituições de ensino", "escolas": "escolas",
+           "universidades": "universidades", "empresarial": "empresas com sede registrada"}
 MAX_ITENS = 15
 
 
@@ -35,7 +36,7 @@ def build(rec, nome):
     if not itens:
         return None
     grupos = []
-    for ramo in ("educacional", "empresarial"):
+    for ramo in ("educacional", "escolas", "universidades", "empresarial"):
         lst = sorted([i for i in itens if i.get("ramo") == ramo], key=lambda x: x["nome"].lower())
         if not lst:
             continue
@@ -57,8 +58,9 @@ def build(rec, nome):
         f'registrada na cidade (dados públicos do Wikidata).</p>'
         + "".join(grupos) +
         f'<p style="margin:9px 0 0;color:#94a3b8;font-size:.78rem">Fontes: Wikidata — itens com '
-        f'P131 = esta cidade e classe (transitiva) de instituição de ensino (Q2385804) ou empresa '
-        f'(Q4830453). Onde a fonte não tem o dado, o item não aparece.</p></section>')
+        f'P131 = esta cidade e classe de instituição de ensino (Q2385804), escola (Q9842), '
+        f'universidade (Q3918) ou empresa (Q4830453). '
+        f'Onde a fonte não tem o dado, o item não aparece.</p></section>')
     return body
 
 
