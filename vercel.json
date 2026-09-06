@@ -853,5 +853,17 @@
       "source": "/it/gorizia",
       "destination": "/it/gorizia.html"
     }
+  ],
+  "redirects": [
+    {
+      "source": "/onde-comer-festa-peao",
+      "destination": "/festa-do-peao-barretos-2027-ingressos",
+      "permanent": true
+    },
+    {
+      "source": "/onde-comer-barretos-madrugada",
+      "destination": "/festa-do-peao-barretos-2027-ingressos",
+      "permanent": true
+    }
   ]
 }
