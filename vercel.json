@@ -858,12 +858,12 @@
     {
       "source": "/onde-comer-festa-peao",
       "destination": "/festa-do-peao-barretos-2027-ingressos",
-      "permanent": true
+      "statusCode": 301
     },
     {
       "source": "/onde-comer-barretos-madrugada",
       "destination": "/festa-do-peao-barretos-2027-ingressos",
-      "permanent": true
+      "statusCode": 301
     }
   ]
 }
