@@ -30,21 +30,28 @@ export async function onRequestGet({ request }) {
     if (r && r.ok) row = (await r.json())[0] || null;
   } catch (e) { /* fail-closed → home */ }
 
-  let dest = null;
+  let dest = null, cjDirect = null;
   if (row) {
     const cu = String(row.click_url || '');
     for (const d of CJ) {
       if (cu.indexOf(d) >= 0) {
         const m = cu.match(/click-\d+-(\d+)/);
-        if (m) { dest = 'https://www.' + d + '/click-' + PID + '-' + m[1] + '?sid=' + encodeURIComponent(sid); break; }
+        if (m) { cjDirect = 'https://www.' + d + '/click-' + PID + '-' + m[1] + '?sid=' + encodeURIComponent(sid); break; }
       }
     }
     if (!dest && /s\.shopee\.com|meli\.la|ebay\.com\/deals/.test(cu)) dest = cu;
     if (!dest) {
       const adv = ((row.advertiser || '') + ' ' + (row.name || '')).toLowerCase().replace(/[^a-z0-9 ]/g, ' ');
-      for (const b of BRANDS) { if (adv.indexOf(b) >= 0) { dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=oferta_' + sid.slice(-8); break; } }
+      for (const b of BRANDS) {
+        if (adv.indexOf(b) >= 0) {
+          // roteia via engine (log de clique em ads_clicks + PID por site);
+          // se a oferta já é link CJ, repassa como dest (deep link url=)
+          dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=oferta_' + sid.slice(-8) + (cjDirect ? '&dest=' + encodeURIComponent(cjDirect) : '');
+          break;
+        }
+      }
     }
-    if (!dest) dest = ENGINE + '?brand=auto&site=' + site + '&slot=oferta_geo';
+    if (!dest) dest = cjDirect || (ENGINE + '?brand=auto&site=' + site + '&slot=oferta_geo');
   }
   if (!dest) dest = site === 'solvegrid' ? 'https://www.solvegrid.com.br/'
     : site === 'nexus' ? 'https://nexusplataforma.ia.br/' : 'https://www.aquitemachadinhos.com.br/';
