@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Oferta Verificada 2026 — Nexus Network</title>
+<meta name="description" content="Oferta verificada do ecossistema Nexus: condições, cupom e link oficial direto da loja."/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+:root{color-scheme:dark}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0b1220;color:#e2e8f0;line-height:1.6}
+main{max-width:760px;margin:0 auto;padding:36px 20px}
+.card{background:#111a2e;border:1px solid #1e293b;border-radius:14px;padding:26px}
+h1{color:#38bdf8;font-size:1.6rem;margin:0 0 10px}
+.tag{display:inline-block;background:#1e293b;border-radius:999px;padding:3px 12px;font-size:.78rem;color:#94a3b8;margin:0 6px 8px 0}
+.btn{display:inline-block;background:#38bdf8;color:#0b1220;font-weight:700;padding:13px 26px;border-radius:9px;text-decoration:none;margin-top:18px;font-size:1.05rem}
+.meta{color:#94a3b8;font-size:.85rem;margin-top:14px}
+.erro{border:1px solid #7f1d1d;background:#1a0f0f}
+footer{border-top:1px solid #1e293b;margin-top:36px;padding:18px;font-size:.82rem;color:#94a3b8;text-align:center}
+footer a{color:#38bdf8}
+</style>
+</head>
+<body>
+<main>
+  <div class="card" id="card">
+    <h1 id="titulo">Carregando oferta…</h1>
+    <div id="tags"></div>
+    <p id="desc">Verificando condições vigentes com o parceiro.</p>
+    <a class="btn" id="cta" href="#" rel="nofollow sponsored noopener" target="_blank">Ver oferta na loja oficial</a>
+    <p class="meta">Link de afiliado — o Nexus pode receber comissão. Condições válidas na loja oficial.</p>
+  </div>
+  <footer>© 2026 Nexus Network · <a href="/">início</a> · <a href="/sitemap.xml">sitemap</a></footer>
+</main>
+<script>
+(function () {
+  var SB = 'https://etbxbaaaspdcoiakifbb.supabase.co';
+  var ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0YnhiYWFhc3BkY29pYWtpZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NTE2OTcsImV4cCI6MjEwMjUyNzY5N30.529X__LRoPurMqRJBVmiI9EYY8wgIv3cefZ-nxSiKJ0';
+  var ENGINE = 'https://achadinhos-ad-engine.vercel.app/api/ads/go';
+  var CJ = ['jdoqocy.com', 'anrdoezrs.net', 'tkqlhce.com', 'dpbolvw.net', 'kqzyfj.com'];
+  var BRANDS = ['booking','nordvpn','nordpass','surfshark','carla','shopee','mercadolivre','ebay','amazon','amazon_us','aliexpress','malwarebytes','wondershare','movavi','parallels','corel','sucuri','updf','switchbot','bluetti','soundcore','novakid','economybookings','faculdade','clickbus','udemy','voo'];
+  var host = location.hostname || '';
+  var site = host.indexOf('nexusplataforma') >= 0 ? 'nexus' : (host.indexOf('solvegrid') >= 0 ? 'solvegrid' : 'aquitemachadinhos');
+  var PID = site === 'nexus' ? '101870639' : (site === 'solvegrid' ? '101870640' : '101859672');
+  var uuid = new URLSearchParams(location.search).get('oferta') || '';
+  var sid = site + '_oferta_' + (uuid ? uuid.replace(/-/g, '').slice(0, 8) : 'dir');
+
+  function destino(o) {
+    var cu = (o.click_url || '') + '';
+    for (var i = 0; i < CJ.length; i++) {
+      if (cu.indexOf(CJ[i]) >= 0) {
+        var m = cu.match(/click-\d+-(\d+)/);
+        if (m) return 'https://www.' + CJ[i] + '/click-' + PID + '-' + m[1] + '?sid=' + encodeURIComponent(sid);
+      }
+    }
+    if (/s\.shopee\.com|meli\.la|ebay\.com\/deals/.test(cu)) return cu;
+    var adv = ((o.advertiser || '') + ' ' + (o.name || '')).toLowerCase().replace(/[^a-z0-9 ]/g, ' ');
+    for (var j = 0; j < BRANDS.length; j++) {
+      if (adv.indexOf(BRANDS[j]) >= 0) return ENGINE + '?brand=' + BRANDS[j] + '&site=' + site + '&slot=oferta_' + sid.slice(-8);
+    }
+    return ENGINE + '?brand=auto&site=' + site + '&slot=oferta_geo';
+  }
+
+  function render(o) {
+    document.getElementById('titulo').textContent = (o && o.name ? o.name : 'Ofertas do momento');
+    var t = [];
+    if (o && o.advertiser) t.push(o.advertiser);
+    if (o && o.category) t.push(o.category);
+    if (o && o.region) t.push(o.region);
+    if (o && o.promo_type) t.push(o.promo_type);
+    if (o && o.coupon_code) t.push('Cupom: ' + o.coupon_code);
+    document.getElementById('tags').innerHTML = t.map(function (x) {
+      return '<span class="tag">' + String(x).replace(/</g, '&lt;') + '</span>';
+    }).join('');
+    document.getElementById('desc').textContent = o && o.advertiser
+      ? 'Oferta verificada de ' + o.advertiser + ' no ecossistema Nexus. Confira as condições vigentes antes de finalizar.'
+      : 'Explore as ofertas verificadas do ecossistema Nexus — parceiros afiliados com condições atualizadas.';
+    document.getElementById('cta').href = destino(o || {});
+    document.title = ((o && o.name) ? o.name : 'Ofertas Nexus') + ' | Nexus Network';
+  }
+
+  function fallback() {
+    document.getElementById('card').classList.add('erro');
+    render(null);
+    document.getElementById('cta').textContent = 'Ver ofertas disponíveis';
+  }
+
+
+  // 21.17: ?marca=Kaspersky → top oferta do anunciante (rank) via PostgREST
+  var marca = new URLSearchParams(location.search).get('marca') || '';
+  var uuid2 = uuid;
+  function loadMarca() {
+    fetch(SB + '/rest/v1/nexus_public_offers_ordered_mv?advertiser=ilike.*' +
+          encodeURIComponent(marca) + '*&select=id,name,advertiser,category,region,promo_type,coupon_code,click_url&order=rank_score.desc&limit=1',
+          { headers: { apikey: ANON, Authorization: 'Bearer ' + ANON } })
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (rows) { rows && rows.length ? render(rows[0]) : fallback(); })
+      .catch(fallback);
+  }
+  if (!uuid && marca) { loadMarca(); return; }
+  if (!uuid && !marca) { fallback(); return; }
+  if (uuid && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uuid)) { fallback(); return; }
+  fetch(SB + '/rest/v1/nexus_public_offers_ordered_mv?id=eq.' + uuid +
+        '&select=id,name,advertiser,category,region,promo_type,coupon_code,click_url&limit=1',
+        { headers: { apikey: ANON, Authorization: 'Bearer ' + ANON } })
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (rows) { rows && rows.length ? render(rows[0]) : fallback(); })
+    .catch(fallback);
+})();
+</script>
+</body>
+</html>

@@ -5,6 +5,8 @@
 
 User-agent: *
 Allow: /
+Disallow: /go
+Disallow: /api/
 Crawl-delay: 1
 
 # ------------------------------------------------------------------------------
@@ -24,6 +26,8 @@ User-agent: Qwantify
 User-agent: MojeekBot
 User-agent: SeznamBot
 Allow: /
+Disallow: /go
+Disallow: /api/
 
 # ------------------------------------------------------------------------------
 # 2. ASIAN & REGIONAL SEARCH ENGINES (China, South Korea, Japan, Vietnam, Huawei)
@@ -41,6 +45,8 @@ User-agent: Daumoa
 User-agent: CocCocBot
 User-agent: PetalBot
 Allow: /
+Disallow: /go
+Disallow: /api/
 
 # ------------------------------------------------------------------------------
 # 3. EASTERN EUROPEAN & CIS SEARCH ENGINES (Russia, Kazakhstan, Belarus)
@@ -51,6 +57,8 @@ User-agent: YandexImages
 User-agent: YandexDirect
 User-agent: Mail.Ru
 Allow: /
+Disallow: /go
+Disallow: /api/
 
 # ------------------------------------------------------------------------------
 # 4. AI SEARCH ENGINES & NEXT-GEN LLM AGENTS (2026 Discovery Engines)
@@ -70,6 +78,8 @@ User-agent: cohere-ai
 User-agent: PhindBot
 User-agent: KagiBot
 Allow: /
+Disallow: /go
+Disallow: /api/
 
 # ------------------------------------------------------------------------------
 # SITEMAP DIRECTIVES (Sitemap Index & Deep Sub-Sitemaps)
