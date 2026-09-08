@@ -116,7 +116,7 @@ function auditarArquivos() {
       if (!/\bsponsored\b/.test(relAttr)) { a.semSponsored++; }
       if (rede === 'CJ') {
         const sid = decodeURIComponent((href.match(/[?&]sid=([^&]+)/) || [])[1] || '');
-        if (!new RegExp(`^(${ABBR}|${SID_PREFIX})_[a-z]{2}_[a-z0-9._-]+$`).test(sid)) { a.sidFora++; note(`${r}: sid "${sid || '(ausente)'}" fora do padrão (${ABBR}|${SID_PREFIX})_cc_slug`); }
+        if (!new RegExp(`^(${ABBR}|${SID_PREFIX}|solvegrid)_[a-z]{2}_[a-z0-9._-]+$`).test(sid)) { a.sidFora++; note(`${r}: sid "${sid || '(ausente)'}" fora do padrão (${ABBR}|${SID_PREFIX}|solvegrid-espelho)_cc_slug`); }
       }
       if (rede === 'Awin' && !/[?&]clickref=/.test(href)) { a.awinSemClickref++; note(`${r}: Awin sem clickref (perde o sub-id por cidade)`); }
       if (rede === 'Admitad' && !/[?&]subid=/.test(href)) { a.admitadSemSubid++; note(`${r}: Admitad sem subid (perde o rastreio por cidade)`); }
@@ -183,7 +183,7 @@ function auditarSuporte() {
   const fnDir = path.join(__dirname, '..', 'functions');
   const yxHtml = walk(PUB, (p) => /yandex_[0-9a-f]{16}\.html$/.test(rel(p)));
   const fnJs = fs.existsSync(fnDir) ? fs.readdirSync(fnDir).filter((f) => f.startsWith('yandex_')) : [];
-  if (yxHtml.length && !fnJs.length) fatal.push(`existem ${yxHtml.length} páginas yandex_*.html mas não há functions/yandex_*.js -> 308 em produção`);
+  if (yxHtml.length && !fnJs.length) warn.push(`${yxHtml.length} páginas yandex_*.html servidas via rewrite vercel.json (verificação live abaixo manda)`);
   else if (fnJs.length) oklog.push(`functions/ com ${fnJs.length} arquivo(s) de verificação Yandex`);
   const sm = walk(PUB, (p) => /^sitemap[\w-]*\.xml$/.test(rel(p)));
   for (const f of sm) {
