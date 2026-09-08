@@ -48,20 +48,6 @@
       ]
     }
   ],
-  "rewrites": [
-    {
-      "source": "/yandex_33c01227a7f7ee47.html",
-      "destination": "/yandex_33c01227a7f7ee47"
-    },
-    {
-      "source": "/yandex_f856e4628d74416b.html",
-      "destination": "/yandex_f856e4628d74416b"
-    },
-    {
-      "source": "/yandex_970f2358d8f54a83.html",
-      "destination": "/yandex_970f2358d8f54a83"
-    }
-  ],
   "redirects": [
     {
       "source": "/onde-comer-festa-peao",
