@@ -23,9 +23,15 @@ module.exports = async (req, res) => {
     try {
       const path = String(req.query.path || '/').slice(0, 200);
       const sid = req.query.sid ? String(req.query.sid).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 120) : null;
-      const base = process.env.SUPABASE_URL || process.env.CLICKS_DB_URL;
-      const key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.CLICKS_DB_KEY;
-      if (!base || !key) return res.status(200).json({ ok: false, reason: 'no_db_env' });
+      // envs do projeto quando presentes; fallback: anon key pública (mesmo
+      // padrão do functions/go.js do CF Pages — o RPC é SECURITY DEFINER e
+      // read-only, seguro para expor).
+      const base = process.env.SUPABASE_URL || process.env.CLICKS_DB_URL
+        || 'https://etbxbaaaspdcoiakifbb.supabase.co';
+      let key = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.CLICKS_DB_KEY;
+      if (!key) {
+        key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0YnhiYWFhc3BkY29pYWtpZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NTE2OTcsImV4cCI6MjEwMjUyNzY5N30.529X__LRoPurMqRJBVmiI9EYY8wgIv3cefZ-nxSiKJ0';
+      }
       const r = await fetch(base.replace(/\/$/, '') + '/rest/v1/rpc/nexus_get_contextual_offers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', apikey: key, Authorization: 'Bearer ' + key },
