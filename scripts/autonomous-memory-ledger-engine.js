@@ -91,15 +91,15 @@ function sbQuery(pathAndQuery, prefer) {
   });
 }
 
-async function countReal(table, column, bounds) {
-  const r = await sbQuery(`${table}?select=id&${column}=gte.${bounds.gte}&${column}=lt.${bounds.lt}`, 'count=exact');
+async function countReal(table, column, bounds, extra = '') {
+  const r = await sbQuery(`${table}?select=id&${column}=gte.${bounds.gte}&${column}=lt.${bounds.lt}${extra}`, 'count=exact');
   if (!r || r.status !== 200) return null;
   const total = Number((r.range.split('/')[1] || r.rows.length));
   return Number.isFinite(total) ? total : r.rows.length;
 }
 
-async function countSince(table, column, startDateStr) {
-  const r = await sbQuery(`${table}?select=id&${column}=gte.${startDateStr}T03:00:00.000Z&${column}=lt.2100-01-01T00:00:00.000Z`, 'count=exact');
+async function countSince(table, column, startDateStr, extra = '') {
+  const r = await sbQuery(`${table}?select=id&${column}=gte.${startDateStr}T03:00:00.000Z&${column}=lt.2100-01-01T00:00:00.000Z${extra}`, 'count=exact');
   if (!r || r.status !== 200) return null;
   const total = Number((r.range.split('/')[1] || r.rows.length));
   return Number.isFinite(total) ? total : r.rows.length;
@@ -134,9 +134,11 @@ async function runAutonomousDirectorAudit() {
     console.log('🧹 Ledger antigo (com valores fictícios) descartado — reconstruindo com dados reais.');
   }
 
-  // Sprint: início 31/08/2026, 21 dias
-  const startDate = new Date('2026-08-31T00:00:00.000Z');
-  const elapsedDays = Math.max(1, Math.min(21, Math.floor((now - startDate) / 86400000) + 1));
+  // Sprint: início 31/08/2026, 21 dias — contagem de dias NO CALENDÁRIO DE
+  // SÃO PAULO (21.37: o contador antigo rolava à 00:00 UTC = 21:00 SP e os
+  // painéis noturnos mostravam "Dia 11" ainda no dia 10 da data exibida)
+  const daysSinceStart = Math.round((Date.parse(todayStr) - Date.parse('2026-08-31')) / 86400000);
+  const elapsedDays = Math.max(1, Math.min(21, daysSinceStart + 1));
   ledger.sprint_day = elapsedDays;
 
   if (!ledger.daily_and_monthly_tracking) ledger.daily_and_monthly_tracking = {};
@@ -145,9 +147,13 @@ async function runAutonomousDirectorAudit() {
 
   // ===== MÉTRICAS REAIS (leitura direta do banco) =====
   console.log('📡 Lendo dados reais do Supabase...');
-  const pvToday = await countReal('metrics_events', 'criado_em', spDayUtcBounds(todayStr));
-  const pvYesterday = await countReal('metrics_events', 'criado_em', spDayUtcBounds(yesterdayStr));
-  const pvSprint = await countSince('metrics_events', 'criado_em', '2026-08-31');
+  // 21.37: PAGEVIEWS contam APENAS eventos tipo 'pageview' — metrics_events
+  // também recebe 'view'/'anuncio_cadastrado' (impressões legadas) e o contador
+  // antigo somava tudo, inflando o acumulado do sprint (~66 eventos a mais)
+  const PV_FILTER = '&tipo=eq.pageview';
+  const pvToday = await countReal('metrics_events', 'criado_em', spDayUtcBounds(todayStr), PV_FILTER);
+  const pvYesterday = await countReal('metrics_events', 'criado_em', spDayUtcBounds(yesterdayStr), PV_FILTER);
+  const pvSprint = await countSince('metrics_events', 'criado_em', '2026-08-31', PV_FILTER);
   // 21.36: "Ontem" ao vivo do banco — o painel lia history[last] e mostrava
   // arquivamento velho/zero como se fosse ontem ("Ontem: 0 PVs" com 46 reais)
   tracking.yesterday_metrics = { date: yesterdayStr, pageviews: pvYesterday ?? null,
@@ -232,6 +238,29 @@ async function runAutonomousDirectorAudit() {
     ledger.search_indexation_metrics = { data_source: 'supabase indisponível', engines: {}, measured_at: nowIso };
     console.log('   Indexação: sem acesso ao log de respostas neste ciclo');
   }
+
+  // Meta (Facebook/Instagram): publicação medida por REGISTRO REAL no banco —
+  // 21.37: a linha do painel dizia "publicações ativas" SEM medir nada.
+  // Verdade medida: nenhum publisher Meta grava publicação; nada é afirmado
+  // sem registro em social_posts (platform instagram/facebook, status published).
+  const metaWeekAgo = new Date(Date.now() - 7 * 86400000).toISOString();
+  const metaRows = await sbQuery(`social_posts?select=platform,created_at&platform=in.(instagram,facebook)&status=eq.published&created_at=gte.${metaWeekAgo}`);
+  let metaPublishedCount = null;
+  let metaLastAt = null;
+  if (metaRows && metaRows.status === 200) {
+    const rows = metaRows.rows || [];
+    metaPublishedCount = rows.length;
+    let last = 0;
+    rows.forEach(r => { const t = Date.parse(r.created_at); if (Number.isFinite(t) && t > last) last = t; });
+    metaLastAt = last ? new Date(last).toISOString() : null;
+  }
+  ledger.meta_publication_metrics = {
+    data_source: metaPublishedCount === null ? 'supabase indisponível' : 'supabase.social_posts (registros reais de publicação)',
+    window_days: 7,
+    published_count: metaPublishedCount,
+    last_published_at: metaLastAt,
+    measured_at: nowIso
+  };
 
   // GSC: ÚLTIMA AUDITORIA MANUAL — rotulada, nunca "ao vivo"
   ledger.google_search_console_metrics = {
