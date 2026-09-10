@@ -13,15 +13,22 @@
 
 const https = require('https');
 
-const KEY = 'a120ccc82c4e2dbeeda51d4cd6d03284e2909f92f101984a2133e567b748455c';
+// 21.38: CHAVE INDEXNOW POR DOMÍNIO — o Bing vincula a chave ao primeiro host
+// que a valida e devolve 403 UserForbiddedToAccessSite para qualquer outro
+// (o solvegrid levou 403 em 100% das submissões com a chave a120, que é do
+// aquitemachadinhos). Cada site usa a própria chave, publicada em
+// public/{chave}.txt no repo correspondente. Domínio novo = nova entrada AQUI
+// + arquivo-chave no host (nunca reutilizar chave entre domínios).
+const KEYS = {
+  'https://www.aquitemachadinhos.com.br': 'a120ccc82c4e2dbeeda51d4cd6d03284e2909f92f101984a2133e567b748455c',
+  'https://www.solvegrid.com.br': '%s'
+};
 const SUPABASE_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Apenas domínios com arquivo-chave IndexNow acessível (verificado 02/09)
-const DOMAINS = [
-  'https://www.aquitemachadinhos.com.br',
-  'https://www.solvegrid.com.br'
-];
+const DOMAINS = Object.keys(KEYS);
+const keyFor = (domain) => KEYS[domain];
 
 const ENGINES = [
   { name: 'Bing', host: 'www.bing.com' },
@@ -33,9 +40,9 @@ const ENGINES = [
   { name: 'IndexNow-Rede', host: 'api.indexnow.org' }
 ];
 
-function pingEngine(engine, pageUrl) {
+function pingEngine(engine, pageUrl, key) {
   return new Promise((resolve) => {
-    const path = `/indexnow?url=${encodeURIComponent(pageUrl)}&key=${KEY}`;
+    const path = `/indexnow?url=${encodeURIComponent(pageUrl)}&key=${key}`;
     const req = https.request({ hostname: engine.host, path, method: 'GET', timeout: 8000 }, (res) => {
       res.resume();
       res.on('end', () => resolve({ engine: engine.name, httpStatus: res.statusCode, pageUrl }));
@@ -82,7 +89,7 @@ async function runMultiEngineGlobalPinger() {
   const jobs = [];
   for (const domain of DOMAINS) {
     for (const engine of ENGINES) {
-      jobs.push(pingEngine(engine, `${domain}/`));
+      jobs.push(pingEngine(engine, `${domain}/`, keyFor(domain)));
     }
   }
   const results = await Promise.all(jobs);
@@ -91,7 +98,7 @@ async function runMultiEngineGlobalPinger() {
   // é por aqui que Seznam e demais recebem quando o endpoint direto bloqueia nossa região)
   // Um lote POR domínio (a rede exige host único no urlList)
   const batchPost = (domain) => new Promise((resolve) => {
-    const body = JSON.stringify({ host: new URL(domain).hostname, key: KEY, urlList: [`${domain}/`] });
+    const body = JSON.stringify({ host: new URL(domain).hostname, key: keyFor(domain), urlList: [`${domain}/`] });
     const req = https.request({ hostname: 'api.indexnow.org', path: '/indexnow', method: 'POST', timeout: 15000,
       headers: { 'Content-Type': 'application/json; charset=utf-8', 'Content-Length': Buffer.byteLength(body) } }, (res) => {
       res.resume();
