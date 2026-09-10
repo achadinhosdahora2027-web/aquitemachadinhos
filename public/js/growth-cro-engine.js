@@ -167,3 +167,82 @@
     initEngine();
   }
 })();
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+ * LEGACY MONETIZATION HYDRATOR v13.0 (2026-09-10) — Multi-Tier Ad Injection
+ * Carregado por TODAS as páginas legadas (este script já vinha em todas):
+ *   · Tier CPM (tráfego NÃO-Google): Monetag zona 11691043 + Adsterra native
+ *     (o tráfego Google já recebe SOMENTE o AdSense estático do <head> —
+ *     política de isolamento da conta Adsense preservada).
+ *   · Tier CONVERSÃO: cards de ofertas contextuais via
+ *     /api/supabase/contextual-offers (RPC read-only por nicho da página) —
+ *     link CJ/Shopee/Lomadee com SID forense legacy_{path}_{AAAAMMDDHH}.
+ *   · FAIL-CLOSED ABSOLUTO: IIFE isolado, try/catch total, timeout 2.5s,
+ *     AbortController; QUALQUER falha → silêncio (página original intacta,
+ *     zero 500, zero atraso: hydrata após DOMContentLoaded).
+ * ══════════════════════════════════════════════════════════════════════════ */
+(function() {
+  'use strict';
+  if (window.__legacyHydration) return;
+  window.__legacyHydration = true;
+
+  var escH = function(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+
+  function initLegacyMonetization() {
+    try {
+      var isGoogleTraffic = /google\./i.test(String(document.referrer || ''));
+
+      // ── Tier 1: CPM na entrada (não-Google) — nunca bloqueia render ──
+      if (!isGoogleTraffic) {
+        var adWrap = document.createElement('div');
+        adWrap.id = 'legacy-ad-tier';
+        adWrap.setAttribute('style', 'margin:18px auto;max-width:760px;text-align:center;');
+        adWrap.innerHTML = '<script src="https://quge5.com/88/tag.min.js" data-zone="11691043" async data-cfasync="false"><\/script>'
+          + '<script async="async" data-cfasync="false" src="https://undergocutlery.com/65ecd104cf64eb4aad5086068ce93de8/invoke.js"><\/script>'
+          + '<div id="container-65ecd104cf64eb4aad5086068ce93de8"></div>';
+        document.body.appendChild(adWrap);
+      }
+
+      // ── Tier 2: cards contextuais ABAIXO do conteúdo principal ──
+      var ctrl = new AbortController();
+      var timer = setTimeout(function() { ctrl.abort(); }, 2500);
+      var pathSlug = (location.pathname.replace(/[^a-zA-Z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 30) || 'home');
+      var sid = 'legacy_' + pathSlug + '_' + new Date().toISOString().slice(0, 13).replace(/[-T]/g, '');
+      fetch('/api/supabase/contextual-offers?path=' + encodeURIComponent(location.pathname) + '&sid=' + encodeURIComponent(sid), { signal: ctrl.signal })
+        .then(function(r) { return r.ok ? r.json() : null; })
+        .then(function(d) {
+          clearTimeout(timer);
+          if (!d || !d.ok || !d.offers || !d.offers.length) return;
+          var cards = d.offers.map(function(o, i) {
+            var nome = String(o.name || 'Oferta').replace(/_+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 70);
+            return '<a href="' + escH(o.url) + '" rel="sponsored nofollow noopener" target="_blank" style="display:block;background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px;text-decoration:none;color:#111827;box-shadow:0 1px 4px rgba(0,0,0,.07)">'
+              + '<span style="font-size:.68rem;color:#059669;font-weight:800;letter-spacing:.04em;text-transform:uppercase">' + escH(o.category || 'oferta') + '</span>'
+              + '<span style="display:block;font-weight:700;font-size:.95rem;margin:5px 0 2px;line-height:1.3">' + escH(nome) + '</span>'
+              + '<span style="font-size:.78rem;color:#6b7280">' + escH(o.advertiser) + '</span>'
+              + '<span style="display:block;margin-top:9px;background:#059669;color:#fff;font-weight:800;font-size:.85rem;padding:9px;border-radius:8px;text-align:center">Ver oferta →</span></a>';
+          }).join('');
+          var block = document.createElement('section');
+          block.id = 'legacy-offers';
+          block.setAttribute('style', 'margin:24px auto;max-width:760px;padding:0 4px');
+          block.innerHTML = '<div style="font-size:1.05rem;font-weight:800;margin-bottom:10px">🔥 Ofertas relacionadas para você</div>'
+            + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">' + cards + '</div>'
+            + '<p style="font-size:.7rem;color:#9ca3af;margin-top:8px">Links de afiliados — podemos receber comissão pelas compras.</p>';
+          var main = document.querySelector('main') || document.querySelector('article') || document.querySelector('.content');
+          if (main && main.parentNode) main.insertAdjacentElement('afterend', block);
+          else document.body.appendChild(block);
+        })
+        .catch(function() { /* silêncio absoluto — conteúdo original intacto */ });
+    } catch (e) { /* hidratação NUNCA quebra a página legada */ }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLegacyMonetization);
+  } else {
+    initLegacyMonetization();
+  }
+})();
