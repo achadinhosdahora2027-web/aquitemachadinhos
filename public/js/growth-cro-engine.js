@@ -245,7 +245,14 @@
           var block = document.createElement('section');
           block.id = 'legacy-offers';
           block.setAttribute('style', 'margin:24px auto;max-width:760px;padding:0 4px');
+          // v13.3 POLYMORPHIC: resenha única do nicho (IA, atualizada
+          // semanalmente) acima dos cards — contexto editorial de verdade
+          var intro = '';
+          if (d.texto && String(d.texto).length > 120) {
+            intro = '<p style="font-size:.9rem;color:#374151;line-height:1.55;margin:0 0 12px">' + escH(String(d.texto).slice(0, 600)) + '</p>';
+          }
           block.innerHTML = '<div style="font-size:1.05rem;font-weight:800;margin-bottom:10px">🔥 Ofertas relacionadas para você</div>'
+            + intro
             + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">' + cards + '</div>'
             + '<p style="font-size:.7rem;color:#9ca3af;margin-top:8px">Links de afiliados — podemos receber comissão pelas compras.</p>';
           var main = document.querySelector('main') || document.querySelector('article') || document.querySelector('.content');
