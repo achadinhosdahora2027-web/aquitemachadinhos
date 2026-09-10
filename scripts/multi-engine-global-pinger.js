@@ -21,7 +21,7 @@ const https = require('https');
 // + arquivo-chave no host (nunca reutilizar chave entre domínios).
 const KEYS = {
   'https://www.aquitemachadinhos.com.br': 'a120ccc82c4e2dbeeda51d4cd6d03284e2909f92f101984a2133e567b748455c',
-  'https://www.solvegrid.com.br': '%s'
+  'https://www.solvegrid.com.br': '14c7673e6183ed9f1ab3921a0bcdd5e640476bcd85ce47c2cc9f9b766c1ec868'
 };
 const SUPABASE_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
