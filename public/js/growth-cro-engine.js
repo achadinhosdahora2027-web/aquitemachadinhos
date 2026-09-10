@@ -217,6 +217,22 @@
         .then(function(r) { return r.ok ? r.json() : null; })
         .then(function(d) {
           clearTimeout(timer);
+          // GA4 (v13.2): ID de medição vem do cofre via RPC (ga4_measurement_id).
+          // Enquanto for placeholder, nada carrega. Presente → gtag.js em TODAS
+          // as páginas (page_view automático). Falha → silêncio (fail-closed).
+          if (d && d.ga && /^G-[A-Z0-9]+$/.test(String(d.ga)) && !window.__ga4Done) {
+            try {
+              window.__ga4Done = true;
+              window.dataLayer = window.dataLayer || [];
+              window.gtag = function() { dataLayer.push(arguments); };
+              gtag('js', new Date());
+              gtag('config', String(d.ga));
+              var gs = document.createElement('script');
+              gs.async = true;
+              gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(String(d.ga));
+              document.head.appendChild(gs);
+            } catch (e) { /* GA nunca quebra a página */ }
+          }
           if (!d || !d.ok || !d.offers || !d.offers.length) return;
           var cards = d.offers.map(function(o, i) {
             var nome = String(o.name || 'Oferta').replace(/_+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 70);
