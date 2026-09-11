@@ -12,6 +12,9 @@ const json = (data, cache) => new Response(JSON.stringify(data), {
     'Content-Type': 'application/json; charset=utf-8',
     'Access-Control-Allow-Origin': '*',
     'Cache-Control': cache || 'public, s-maxage=300, stale-while-revalidate=600',
+    // v113: a resposta VARIA por pais (targeted-countries da CJ). Sem isto o
+    // CDN serviria a oferta BR para visitante US.
+    'Vary': 'CF-IPCountry',
   },
 });
 
@@ -24,10 +27,20 @@ export async function onRequestGet({ request, params }) {
     const u = new URL(request.url);
     const path = (u.searchParams.get('path') || '/').slice(0, 200);
     const sid = (u.searchParams.get('sid') || '').replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 120) || null;
+    // v113 FIX: pais REAL do visitante (Cloudflare) -> a RPC respeita o
+    // targeted-countries oficial da CJ e nao serve link BR-only fora do BR.
+    const country = String(
+      (request.cf && request.cf.country) || request.headers.get('cf-ipcountry') || ''
+    ).toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2) || null;
+    // v113 FIX C1: site -> PID correto (NUNCA o CID 8041957).
+    const host = String(u.hostname || '').toLowerCase();
+    const site = host.includes('nexusplataforma') ? 'nexus'
+               : host.includes('solvegrid') ? 'solvegrid'
+               : 'aquitemachadinhos';
     const r = await fetch(SB + '/rest/v1/rpc/nexus_get_contextual_offers', {
       method: 'POST',
       headers: { apikey: ANON, Authorization: 'Bearer ' + ANON, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ p_path: path, p_limit: 6, p_sid: sid }),
+      body: JSON.stringify({ p_path: path, p_limit: 6, p_sid: sid, p_country: country, p_site: site }),
     });
     const data = await r.json().catch(() => null);
     return json(data && typeof data === 'object' ? data : { ok: false });
