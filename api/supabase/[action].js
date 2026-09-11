@@ -23,6 +23,16 @@ module.exports = async (req, res) => {
     try {
       const path = String(req.query.path || '/').slice(0, 200);
       const sid = req.query.sid ? String(req.query.sid).replace(/[^a-zA-Z0-9_-]/g, '').slice(0, 120) : null;
+      // v113 FIX: pais real do visitante (Vercel/Cloudflare) -> respeita
+      // targeted-countries da CJ. Sem isso a RPC servia link BR para todo mundo.
+      const country = String(
+        req.headers['x-vercel-ip-country'] || req.headers['cf-ipcountry'] || ''
+      ).toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2) || null;
+      // v113 FIX C1: site -> PID correto (nunca o CID).
+      const host = String(req.headers['x-forwarded-host'] || req.headers.host || '').toLowerCase();
+      const site = host.includes('nexusplataforma') ? 'nexus'
+                 : host.includes('solvegrid') ? 'solvegrid'
+                 : 'aquitemachadinhos';
       // envs do projeto quando presentes; fallback: anon key pública (mesmo
       // padrão do functions/go.js do CF Pages — o RPC é SECURITY DEFINER e
       // read-only, seguro para expor).
@@ -35,10 +45,12 @@ module.exports = async (req, res) => {
       const r = await fetch(base.replace(/\/$/, '') + '/rest/v1/rpc/nexus_get_contextual_offers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', apikey: key, Authorization: 'Bearer ' + key },
-        body: JSON.stringify({ p_path: path, p_limit: 6, p_sid: sid }),
+        body: JSON.stringify({ p_path: path, p_limit: 6, p_sid: sid, p_country: country, p_site: site }),
         signal: AbortSignal.timeout(2500),
       });
       const data = await r.json().catch(() => null);
+      // v113: cache VARIA por pais (senao o CDN serve oferta BR para os EUA).
+      res.setHeader('Vary', 'x-vercel-ip-country');
       res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
       return res.status(200).json(data && typeof data === 'object' ? data : { ok: false });
     } catch (e) {
