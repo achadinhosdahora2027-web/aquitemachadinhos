@@ -295,11 +295,11 @@ module.exports = async (req, res) => {
     if (brandKey === 'udemy' && rawDest) {
       targetUrl = rawDest;
     }
-  } else if (brandCatalog[brandKey] && brandCatalog[brandKey].url) {
+  } else if (!targetUrl && brandCatalog[brandKey] && brandCatalog[brandKey].url) {
     targetUrl = String(brandCatalog[brandKey].url).replace('{PID}', cjPid);
-  } else if (rawDest) {
+  } else if (!targetUrl && rawDest) {
     targetUrl = rawDest;
-  } else {
+  } else if (!targetUrl) {
     // Ultimate Fallback
     targetUrl = 'https://www.aquitemachadinhos.com.br';
   }
