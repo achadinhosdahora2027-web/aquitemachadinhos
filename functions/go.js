@@ -53,6 +53,21 @@ export async function onRequestGet({ request }) {
     }
     if (!dest) dest = cjDirect || (ENGINE + '?brand=auto&site=' + site + '&slot=oferta_geo');
   }
+  // v126.3: FALLBACK MONETIZADO. Antes, quando a oferta nao era encontrada no
+  // catalogo (ex.: ?marca=amazon — nao existe advertiser 'amazon' na MV), o
+  // usuario caia na HOME: clique gasto, zero chance de venda. Medido em teste:
+  // 3 de 14 marcas testadas caiam na home. Agora, se a marca pedida for uma
+  // marca conhecida do engine, entrega ao engine, que resolve marca + geo
+  // (e ja aplica o PID correto). So cai na home se nao houver marca alguma.
+  if (!dest && marca) {
+    const mk = marca.toLowerCase().replace(/[^a-z0-9]/g, '');
+    for (const b of BRANDS) {
+      if (mk.indexOf(b) >= 0 || b.indexOf(mk) >= 0) {
+        dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=marca_' + sid.slice(-8);
+        break;
+      }
+    }
+  }
   if (!dest) dest = site === 'solvegrid' ? 'https://www.solvegrid.com.br/'
     : site === 'nexus' ? 'https://nexusplataforma.ia.br/' : 'https://www.aquitemachadinhos.com.br/';
 
