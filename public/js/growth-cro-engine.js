@@ -205,23 +205,23 @@
         // v113 FIX: scripts inseridos via innerHTML NUNCA executam (spec HTML).
         // A Monetag 11691043 e o native da Adsterra estavam mortos desde a v13.
         // Agora sao criados com createElement (mesmo mecanismo da SocialBar).
-        var adContainer = document.createElement('div');
-        adContainer.id = 'container-65ecd104cf64eb4aad5086068ce93de8';
-        adWrap.appendChild(adContainer);
         document.body.appendChild(adWrap);
 
-        var mtg = document.createElement('script');
-        mtg.src = 'https://quge5.com/88/tag.min.js';
-        mtg.setAttribute('data-zone', '11691043');
-        mtg.async = true;
-        mtg.setAttribute('data-cfasync', 'false');
-        adWrap.appendChild(mtg);
+        // v113.1: zona Monetag 11691043 DESATIVADA -> /88/11691043 responde HTTP 404
+        // tanto em quge5.com quanto em 6opo.com (o loader tag.min.js da 200, a zona nao).
+        // Tag removida em vez de mantida morta; recolocar quando houver zona valida
+        // do painel Monetag (canais do ads.txt: 3471486 / 3471484).
 
-        var nat = document.createElement('script');
-        nat.src = 'https://undergocutlery.com/65ecd104cf64eb4aad5086068ce93de8/invoke.js';
-        nat.async = true;
-        nat.setAttribute('data-cfasync', 'false');
-        adWrap.appendChild(nat);
+
+        // v113.1: o container 65ecd104... retornava HTTP 403 em qualquer referrer
+        // (id obsoleto: nao consta em /publisher/placements.json deste dominio).
+        // Substituido pelo Popunder_1 REAL do dominio 5975392 (placement 30703817),
+        // que responde 200. Verificado na API oficial da Adsterra.
+        var pop = document.createElement('script');
+        pop.src = 'https://undergocutlery.com/n125219ufh?key=0474000233cefd60e54ca390d15beaaf';
+        pop.async = true;
+        pop.setAttribute('data-cfasync', 'false');
+        adWrap.appendChild(pop);
       }
 
       // ── Tier 2: cards contextuais ABAIXO do conteúdo principal ──
