@@ -207,10 +207,19 @@
         // Agora sao criados com createElement (mesmo mecanismo da SocialBar).
         document.body.appendChild(adWrap);
 
-        // v113.1: zona Monetag 11691043 DESATIVADA -> /88/11691043 responde HTTP 404
-        // tanto em quge5.com quanto em 6opo.com (o loader tag.min.js da 200, a zona nao).
-        // Tag removida em vez de mantida morta; recolocar quando houver zona valida
-        // do painel Monetag (canais do ads.txt: 3471486 / 3471484).
+        // v125.5: zona Monetag REPOSTA. A 11691043 continua 404, mas as zonas
+        // 274860 e 278800 respondem 200 com payload real de anuncio
+        // (application/json, 2751 bytes, zoneId 11691065 / 11771436).
+        // Verificado em quge5.com e 6opo.com antes de implantar.
+        var mtgZones = ['274860', '278800'];
+        for (var mi = 0; mi < mtgZones.length; mi++) {
+          var mtg = document.createElement('script');
+          mtg.src = 'https://quge5.com/88/tag.min.js';
+          mtg.setAttribute('data-zone', mtgZones[mi]);
+          mtg.async = true;
+          mtg.setAttribute('data-cfasync', 'false');
+          adWrap.appendChild(mtg);
+        }
 
 
         // v113.1: o container 65ecd104... retornava HTTP 403 em qualquer referrer
