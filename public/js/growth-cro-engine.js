@@ -202,10 +202,26 @@
         var adWrap = document.createElement('div');
         adWrap.id = 'legacy-ad-tier';
         adWrap.setAttribute('style', 'margin:18px auto;max-width:760px;text-align:center;');
-        adWrap.innerHTML = '<script src="https://quge5.com/88/tag.min.js" data-zone="11691043" async data-cfasync="false"><\/script>'
-          + '<script async="async" data-cfasync="false" src="https://undergocutlery.com/65ecd104cf64eb4aad5086068ce93de8/invoke.js"><\/script>'
-          + '<div id="container-65ecd104cf64eb4aad5086068ce93de8"></div>';
+        // v113 FIX: scripts inseridos via innerHTML NUNCA executam (spec HTML).
+        // A Monetag 11691043 e o native da Adsterra estavam mortos desde a v13.
+        // Agora sao criados com createElement (mesmo mecanismo da SocialBar).
+        var adContainer = document.createElement('div');
+        adContainer.id = 'container-65ecd104cf64eb4aad5086068ce93de8';
+        adWrap.appendChild(adContainer);
         document.body.appendChild(adWrap);
+
+        var mtg = document.createElement('script');
+        mtg.src = 'https://quge5.com/88/tag.min.js';
+        mtg.setAttribute('data-zone', '11691043');
+        mtg.async = true;
+        mtg.setAttribute('data-cfasync', 'false');
+        adWrap.appendChild(mtg);
+
+        var nat = document.createElement('script');
+        nat.src = 'https://undergocutlery.com/65ecd104cf64eb4aad5086068ce93de8/invoke.js';
+        nat.async = true;
+        nat.setAttribute('data-cfasync', 'false');
+        adWrap.appendChild(nat);
       }
 
       // ── Tier 2: cards contextuais ABAIXO do conteúdo principal ──
