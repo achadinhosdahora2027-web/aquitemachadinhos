@@ -72,6 +72,14 @@ export async function onRequestGet({ request }) {
   //  - <noscript> + <a> visivel: sem JS o usuario ainda chega ao destino
   //  - meta refresh como segunda rede de seguranca
   // ==========================================================================
+  // v126.1: se o destino for o proprio engine (que TAMBEM serve interstitial),
+  // marca noint=1 — sem isto o usuario veria DOIS interstitials em sequencia
+  // (1.5s + 1.5s), dobrando o atrito e derrubando conversao. Comprovado em
+  // navegador real: satelite -> engine -> loja, com 2 telas de espera.
+  if (dest.indexOf('achadinhos-ad-engine.vercel.app') >= 0 && dest.indexOf('noint=') < 0) {
+    dest += (dest.indexOf('?') >= 0 ? '&' : '?') + 'noint=1';
+  }
+
   const UA = String(request.headers.get('user-agent') || '');
   const IS_BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegrambot|headless|curl|wget|python|monitor|lighthouse/i.test(UA);
   const NOINT = u.searchParams.get('noint') === '1';
