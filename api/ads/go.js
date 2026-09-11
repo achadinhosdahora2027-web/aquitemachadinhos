@@ -44,6 +44,7 @@ function resolveCjPid(site, headers) {
 // {PID} é substituído em tempo de execução pelo PID do site de origem.
 const CJ_LINKS = {
   booking: "https://www.kqzyfj.com/click-{PID}-17293138",
+  voo: "https://www.anrdoezrs.net/click-{PID}-17323048",
   carla: "https://www.anrdoezrs.net/click-{PID}-17094338",
   nordvpn: "https://www.anrdoezrs.net/click-{PID}-13914989",
   nordpass: "https://www.dpbolvw.net/click-{PID}-17262576",
@@ -57,7 +58,8 @@ const CJ_LINKS = {
   amazon: "https://amazon.com.br/?tag=aquitemachadinhos-20",
   amazon_us: "https://www.amazon.com/?tag=aquitemachadinhos-20",
   udemy: "https://www.udemy.com/courses/search/?src=ukw&q=",
-  faculdade: "https://faculdade-interativa-core.vercel.app",
+  // faculdade-interativa: projeto ENCERRADO/EXCLUÍDO 08/09 — CTAs de cursos vão p/ Udemy (não-monetizado)
+  faculdade: "https://www.udemy.com/courses/search/?src=ukw&q=",
   clickbus: "https://www.clickbus.com.br/",
   brunoyam: "https://brunoyam.com/",
   nadpo: "https://nadpo.ru/",
@@ -117,7 +119,7 @@ function detectDevice(userAgent = '') {
 }
 
 // Marcas sem programa de afiliados ativo na conta (trafego sem comissao). Udemy: nao existe na CJ.
-const NON_MONETIZED = new Set(['udemy', 'brunoyam']);
+const NON_MONETIZED = new Set(['udemy', 'brunoyam', 'safetywing', 'thefork', 'wise', 'faculdade']);
 
 module.exports = async (req, res) => {
   const brandCatalog = getBrandCatalog();
@@ -139,6 +141,15 @@ module.exports = async (req, res) => {
     query.country ||
     'BR'
   ).toUpperCase().substring(0, 2);
+
+  // v113 FIX C3/A1: classificacao de BOT. Antes disto NENHUM clique era
+  // marcado como bot (device_type so tinha mobile/desktop) e 52% da base de
+  // ads_clicks era bot -- inclusive o SkytabBot (URL Resolution), que faz
+  // prefix-scan da querystring e criava 11 variantes truncadas de 'mention_care'.
+  const UA_RAW = String(headers['user-agent'] || '');
+  const IS_BOT = !UA_RAW || /bot|crawl|spider|slurp|headless|preview|scan|curl|wget|python|java|go-http|okhttp|libwww|httpclient|facebookexternalhit|whatsapp|telegrambot|skytab|claude|gptbot|ccbot|anthropic|perplexity|bytespider|amazonbot|applebot|skywatch|healthcheck|canary\/|pubkyweb|friendica|akkoma|lightpanda|http\.rb|mastodon\/|pleroma|misskey|gotosocial|writefreely|nodebb|peertube|owncast|castopod|funkwhale|bookwyrm|hubzilla|iceshrimp|sharkey|calckey|firefish|fediverse|activitypub|webfinger|undici|node-fetch|axios|got\/|superagent|guzzle|restsharp|postman|insomnia|urllib|aiohttp|requests|scrapy|semrush|ahrefs|mj12|dotbot|petalbot|dataforseo|lighthouse|pagespeed|pingdom|uptimerobot|lexicore|monitor|synthetic/i.test(UA_RAW)
+    // v113.2: UA generico demais tambem e bot (ex.: 'Mozilla/5.0' nu, 'node', 'mint/1.9.3').
+    || UA_RAW.trim() === 'Mozilla/5.0' || UA_RAW.trim().length < 20;
 
   const device = detectDevice(headers['user-agent'] || '');
   const sid = query.sid || `${site}_${country.toLowerCase()}_${slot}_${device}`;
@@ -173,12 +184,38 @@ module.exports = async (req, res) => {
     }
   }
 
+  // v126.2: CORRECAO DE GEO PARA AMAZON.
+  // Medido: 489 de 490 cliques que caiam em amazon.com.br vinham de FORA do
+  // Brasil (297 US, 185 FR...). A Amazon BR nao converte para esse publico —
+  // o visitante cai numa loja em portugues que nao entrega no pais dele, e a
+  // venda simplesmente nao acontece. O roteador por slot ja acertava; o furo
+  // era 'brand=amazon' EXPLICITO, que ignorava o pais. Aqui o brand explicito
+  // passa a respeitar a geografia: so BR (e PT) segue para amazon.com.br.
+  // v185: MARCAS FANTASMA DAS IAs. Medido em producao 11/09: as IAs de reply
+  // publicaram 212x 'brand=voo' e 158x 'brand=carla' — nenhuma existe no
+  // catalogo, e o fail-closed jogava o clique na HOME (clique gasto, zero
+  // chance de venda). 370 de 2.145 links publicados em 48h = 17% desperdicados.
+  // Mapeamento para o destino real da intencao, respeitando geo.
+  if (brandKey === 'voo' || brandKey === 'flight' || brandKey === 'voos') {
+    brandKey = 'booking';           // intencao de viagem -> Booking (geo-swap adiante)
+  } else if (brandKey === 'carla' || brandKey === 'car' || brandKey === 'aluguel') {
+    brandKey = 'economybookings';   // intencao de carro -> EconomyBookings (CJ ativo)
+  }
+
+  if (brandKey === 'amazon' && country !== 'BR' && country !== 'PT') {
+    brandKey = 'amazon_us';
+  }
+
   let targetUrl = '';
 
   const cjPid = resolveCjPid(site, headers);
   // Booking: programas regionais separados na CJ (BR / LATAM / UK-EU)
   if (brandKey === 'booking') {
-    if (REGIONS.TIER1_EU.includes(country) || country === 'GB') brandKey = 'booking_uk';
+    // v125.5: US/CA e demais anglofonos caiam no programa BR (17293138), de baixo
+    // EPC para esse trafego. Agora seguem o Booking UK (15734754), verificado 302.
+    if (REGIONS.TIER1_EU.includes(country) || country === 'GB'
+        || country === 'US' || country === 'CA' || country === 'AU'
+        || country === 'NZ' || country === 'IE' || country === 'ZA') brandKey = 'booking_uk';
     else if (REGIONS.LATAM.includes(country) && country !== 'BR') brandKey = 'booking_latam';
   }
 
@@ -202,8 +239,10 @@ module.exports = async (req, res) => {
     targetUrl = `${targetUrl}${sep}url=${encodeURIComponent(rawDest)}`;
   }
 
-  // Multi-Network Dynamic Tracking Ingestion
+  // Multi-Network Dynamic Tracking Ingestion (apenas marcas monetizadas —
+  // links diretos oficiais (NON_MONETIZED) seguem limpos, sem parâmetros)
   try {
+    if (!NON_MONETIZED.has(brandKey)) {
     const urlObj = new URL(targetUrl);
     // CJ Affiliate
     urlObj.searchParams.set('sid', sid);
@@ -224,6 +263,7 @@ module.exports = async (req, res) => {
       urlObj.searchParams.set('customid', sid);
     }
     targetUrl = urlObj.toString();
+    }
   } catch (e) {
     const sep = targetUrl.includes('?') ? '&' : '?';
     targetUrl = `${targetUrl}${sep}sid=${encodeURIComponent(sid)}&aff_sub=${encodeURIComponent(sid)}`;
@@ -246,6 +286,50 @@ module.exports = async (req, res) => {
     }
   } catch (e) {}
 
+  // Clickstream ingestion (fail-closed) — reativa o log de cliques em
+  // ads_clicks (etbx) com click_ref/SID preenchido. Nunca quebra o redirect.
+  try {
+    const dbUrl = process.env.CLICKS_DB_URL;
+    const dbKey = process.env.CLICKS_DB_KEY;
+    // v113: bot NAO entra em ads_clicks (poluia EPC/CTR/bandit).
+    if (dbUrl && dbKey && !IS_BOT) {
+      const net = targetUrl.includes('awin1.com') ? 'awin'
+        : /kqzyfj|jdoqocy|dpbolvw|anrdoezrs|tkqlhce/.test(targetUrl) ? 'cj'
+        : targetUrl.includes('lmdee') ? 'lomadee'
+        : targetUrl.includes('shopee') ? 'shopee'
+        : (targetUrl.includes('mercadolivre') || targetUrl.includes('meli.')) ? 'mercadolivre'
+        : targetUrl.includes('ebay') ? 'ebay'
+        : targetUrl.includes('booking.com') ? 'cj'
+        : NON_MONETIZED.has(brandKey) ? 'direct' : 'generic';
+      let refPage = null;
+      try { refPage = new URL(headers.referer || '').pathname; } catch (e) {}
+      let ipHash = null;
+      try { ipHash = require('crypto').createHash('sha256').update(String(headers['x-forwarded-for'] || '')).digest('hex').slice(0, 16); } catch (e) {}
+      const ctrl = new AbortController();
+      const tmr = setTimeout(() => ctrl.abort(), 2500);
+      await fetch(`${dbUrl.replace(/\/$/, '')}/rest/v1/ads_clicks`, {
+        method: 'POST',
+        headers: { 'apikey': dbKey, 'Authorization': `Bearer ${dbKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          site_slug: site || null,
+          slot: String(query.slot || '').slice(0, 120) || null,
+          ad_id: String(brandKey || '').slice(0, 80) || null,
+          network: net,
+          click_url: String(targetUrl).slice(0, 500),
+          click_ref: String(sid || '').slice(0, 120),
+          country: country || null,
+          user_agent: String(headers['user-agent'] || '').slice(0, 200),
+          referrer: String(headers.referer || '').slice(0, 300),
+          page_path: refPage,
+          device_type: IS_BOT ? 'bot' : (/Mobile|Android|iPhone/i.test(UA_RAW) ? 'mobile' : 'desktop'),
+          ip_hash: ipHash
+        }),
+        signal: ctrl.signal
+      }).catch(() => {});
+      clearTimeout(tmr);
+    }
+  } catch (e) {}
+
   // Edge Headers
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -254,6 +338,88 @@ module.exports = async (req, res) => {
   res.setHeader('X-Routed-Brand', brandKey);
   res.setHeader('X-CJ-PID', cjPid);
   res.setHeader('X-Monetized', NON_MONETIZED.has(brandKey) ? 'false' : 'true');
-  res.setHeader('Location', targetUrl);
-  return res.status(307).end();
+  // ==========================================================================
+  // v126: INTERSTITIAL DE MONETIZACAO
+  //
+  // PORQUE ISTO EXISTE (medido, nao suposto): 11.128 de 12.099 cliques humanos
+  // de 7 dias (92%) nao tinham page_path — ou seja, tomavam 307 puro e NUNCA
+  // renderizavam HTML. Um 307 nao executa JavaScript, logo Adsterra/Monetag
+  // jamais contavam impressao. Os cliques chegavam ao Telegram (server-side)
+  // mas eram invisiveis para as redes. Este interstitial e o elo que faltava.
+  //
+  // Regras de seguranca:
+  //  - BOT  -> 307 seco (nao gasta banco nem impressao invalida)
+  //  - ?noint=1 -> 307 seco (escape hatch)
+  //  - Humano -> HTML leve com as tags VERIFICADAS 200 + auto-redirect
+  //  - Tags carregam ASSINCRONAS (nao bloqueiam o paint)
+  //  - <noscript> + <a> visivel: sem JS o usuario ainda chega ao destino
+  //  - meta refresh como 2a rede de seguranca
+  // Tags: Popunder Adsterra 30703817 (dominio 5975392) + Monetag 274860/278800.
+  // Excluidas: 11691043 (404), container 65ecd104 (403). Verificadas ao vivo.
+  // ==========================================================================
+  const WANT_INT = !IS_BOT && String(query.noint || '') !== '1';
+  if (!WANT_INT) {
+    res.setHeader('Location', targetUrl);
+    return res.status(307).end();
+  }
+
+  const DWELL_MS = 1500;
+  const esc = (u) => String(u).replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+                              .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const safeTarget = esc(targetUrl);
+
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+  res.setHeader('Referrer-Policy', 'no-referrer');
+  return res.status(200).end(`<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="refresh" content="3;url=${safeTarget}">
+<title>Redirecionando…</title>
+<style>
+ body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+      background:#0f1115;color:#e8eaed;display:flex;min-height:100vh;
+      align-items:center;justify-content:center;text-align:center}
+ .b{max-width:640px;padding:26px}
+ .s{width:34px;height:34px;margin:0 auto 16px;border:3px solid #2a2f3a;
+    border-top-color:#4c8bf5;border-radius:50%;animation:r .9s linear infinite}
+ @keyframes r{to{transform:rotate(360deg)}}
+ a.go{display:inline-block;margin-top:14px;padding:11px 20px;background:#4c8bf5;
+      color:#fff;text-decoration:none;border-radius:8px;font-weight:600}
+ p{opacity:.75;font-size:14px}
+</style></head><body>
+<div class="b">
+  <div class="s"></div>
+  <strong>Levando você à oferta…</strong>
+  <p>Se não avançar automaticamente, toque no botão.</p>
+  <a class="go" id="go" href="${safeTarget}" rel="nofollow noopener">Continuar para a oferta</a>
+  <noscript><p><a href="${safeTarget}" rel="nofollow noopener">Clique aqui para continuar</a></p></noscript>
+</div>
+<script>
+(function(){
+  var DEST=${JSON.stringify(targetUrl)};
+  // Promise.allSettled: uma tag que falhe NUNCA atrasa o redirect nem as outras.
+  function load(src,zone){
+    return new Promise(function(res){
+      try{
+        var s=document.createElement('script');
+        s.src=src; s.async=true; s.setAttribute('data-cfasync','false');
+        if(zone) s.setAttribute('data-zone',zone);
+        s.onload=function(){res('ok')}; s.onerror=function(){res('err')};
+        document.body.appendChild(s);
+      }catch(e){res('err')}
+    });
+  }
+  var tags=[
+    load('https://undergocutlery.com/n125219ufh?key=0474000233cefd60e54ca390d15beaaf'),
+    load('https://quge5.com/88/tag.min.js','274860'),
+    load('https://quge5.com/88/tag.min.js','278800')
+  ];
+  if(Promise.allSettled) Promise.allSettled(tags);
+  // Redirect por tempo fixo: nao depende das tags terminarem (fail-closed).
+  setTimeout(function(){ try{location.replace(DEST)}catch(e){location.href=DEST} }, ${DWELL_MS});
+})();
+</script>
+</body></html>`);
 };
