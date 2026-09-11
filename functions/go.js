@@ -56,8 +56,51 @@ export async function onRequestGet({ request }) {
   if (!dest) dest = site === 'solvegrid' ? 'https://www.solvegrid.com.br/'
     : site === 'nexus' ? 'https://nexusplataforma.ia.br/' : 'https://www.aquitemachadinhos.com.br/';
 
-  return new Response(null, {
-    status: 302,
-    headers: { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer' }
+  // ==========================================================================
+  // v126: INTERSTITIAL DE MONETIZACAO (paridade com api/ads/go.js do engine)
+  //
+  // MEDIDO, nao suposto: 11.128 de 12.099 cliques humanos de 7 dias (92%) nao
+  // registravam page_path — tomavam redirect seco e NUNCA renderizavam HTML.
+  // Um 302/307 nao executa JavaScript, entao Adsterra/Monetag jamais contavam
+  // impressao, embora os cliques chegassem ao Telegram (server-side, outro
+  // caminho). Este e o elo que faltava — e ESTE arquivo e o que atende o
+  // trafego real do Telegram (links /go dos satelites CF Pages).
+  //
+  //  - Bot        -> 302 seco (nao infla impressao invalida)
+  //  - ?noint=1   -> 302 seco (escape hatch)
+  //  - Humano     -> HTML com tags VERIFICADAS 200 + auto-redirect 1.5s
+  //  - <noscript> + <a> visivel: sem JS o usuario ainda chega ao destino
+  //  - meta refresh como segunda rede de seguranca
+  // ==========================================================================
+  const UA = String(request.headers.get('user-agent') || '');
+  const IS_BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegrambot|headless|curl|wget|python|monitor|lighthouse/i.test(UA);
+  const NOINT = u.searchParams.get('noint') === '1';
+  const RH = { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer' };
+  if (IS_BOT || NOINT) return new Response(null, { status: 302, headers: RH });
+
+  const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const sd = esc(dest);
+  const html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1">'
+    + '<meta name="robots" content="noindex,nofollow">'
+    + '<meta http-equiv="refresh" content="3;url=' + sd + '">'
+    + '<title>Redirecionando\u2026</title><style>'
+    + 'body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0f1115;color:#e8eaed;display:flex;min-height:100vh;align-items:center;justify-content:center;text-align:center}'
+    + '.b{max-width:640px;padding:26px}.s{width:34px;height:34px;margin:0 auto 16px;border:3px solid #2a2f3a;border-top-color:#4c8bf5;border-radius:50%;animation:r .9s linear infinite}'
+    + '@keyframes r{to{transform:rotate(360deg)}}a.go{display:inline-block;margin-top:14px;padding:11px 20px;background:#4c8bf5;color:#fff;text-decoration:none;border-radius:8px;font-weight:600}p{opacity:.75;font-size:14px}'
+    + '</style></head><body><div class="b"><div class="s"></div><strong>Levando voc\u00ea \u00e0 oferta\u2026</strong>'
+    + '<p>Se n\u00e3o avan\u00e7ar automaticamente, toque no bot\u00e3o.</p>'
+    + '<a class="go" href="' + sd + '" rel="nofollow noopener">Continuar para a oferta</a>'
+    + '<noscript><p><a href="' + sd + '" rel="nofollow noopener">Clique aqui para continuar</a></p></noscript></div>'
+    + '<script>(function(){var DEST=' + JSON.stringify(dest) + ';'
+    + 'function load(src,zone){return new Promise(function(res){try{var s=document.createElement("script");s.src=src;s.async=true;s.setAttribute("data-cfasync","false");if(zone)s.setAttribute("data-zone",zone);s.onload=function(){res("ok")};s.onerror=function(){res("err")};document.body.appendChild(s)}catch(e){res("err")}})}'
+    + 'var t=[load("https://undergocutlery.com/n125219ufh?key=0474000233cefd60e54ca390d15beaaf"),load("https://quge5.com/88/tag.min.js","274860"),load("https://quge5.com/88/tag.min.js","278800")];'
+    + 'if(Promise.allSettled)Promise.allSettled(t);'
+    + 'setTimeout(function(){try{location.replace(DEST)}catch(e){location.href=DEST}},1500);})();<\/script>'
+    + '</body></html>';
+
+  return new Response(html, {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer' }
   });
 }
