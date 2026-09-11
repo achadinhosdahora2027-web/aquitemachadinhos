@@ -96,7 +96,14 @@ export async function onRequestGet({ request }) {
   }
 
   const UA = String(request.headers.get('user-agent') || '');
-  const IS_BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegrambot|headless|curl|wget|python|monitor|lighthouse/i.test(UA);
+  // v155: BOT_AD_RE endurecido. Medido em producao 11/09: 'LexiCore/1.0'
+  // passava como HUMANO (HTTP 200) e consumia uma impressao de anuncio —
+  // impressao invalida perante o ToS das AdNetworks, alem de desperdicar
+  // requisicao do cluster. Adicionados os agentes nominais da diretiva v155
+  // (lexicore, claude-searchbot, gptbot, perplexity, bytespider, applebot,
+  // semrush, ahrefs, dataforseo, uptimerobot, pingdom) e o cinto 'fetch/http'.
+  const BOT_AD_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegrambot|headless|curl|wget|python|monitor|lighthouse|lexicore|skytab|claude|gptbot|ccbot|anthropic|perplexity|bytespider|applebot|amazonbot|semrush|ahrefs|mj12|dotbot|petalbot|dataforseo|uptimerobot|pingdom|pagespeed|node-fetch|axios|okhttp|java\/|go-http|libwww|scrapy|requests|aiohttp|postman|insomnia/i;
+  const IS_BOT = !UA || BOT_AD_RE.test(UA);
   const NOINT = u.searchParams.get('noint') === '1';
   const RH = { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer' };
   if (IS_BOT || NOINT) return new Response(null, { status: 302, headers: RH });
