@@ -88,7 +88,295 @@ const TAG_DEFINITIONS = [
     faq: [
       { q: "Como funciona a tiragem do Tarot 3D?", a: "Você escolhe mentalmente sua questão, clica na carta em 3D e o oráculo revela a mensagem do Arcano Maior correspondente ao seu momento." }
     ]
-  }
+  },
+  {
+    slug: "hoteis-miami-booking-desconto",
+    title: "Hotéis em Miami com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Miami com 15% a 30% OFF no Booking.com. Praias de South Beach e outlets premium com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Miami com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Miami com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Miami?", a: "Verão (dez–mar) fugindo do frio, reservando com antecedência, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-orlando-booking-desconto",
+    title: "Hotéis em Orlando com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Orlando com 15% a 30% OFF no Booking.com. Parques temáticos (Disney, Universal) e hotéis com café com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Orlando com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Orlando com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Orlando?", a: "Temporada de férias, garantindo cancelamento grátis, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-nova-york-booking-desconto",
+    title: "Hotéis em Nova York com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Nova York com 15% a 30% OFF no Booking.com. Manhattan, Times Square e hotéis perto do metrô com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Nova York com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Nova York com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Nova York?", a: "Baixa temporada (jan–fev), quando os preços caem até 40%, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-las-vegas-booking-desconto",
+    title: "Hotéis em Las Vegas com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Las Vegas com 15% a 30% OFF no Booking.com. Hotéis-cassino da Strip e shows internacionais com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Las Vegas com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Las Vegas com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Las Vegas?", a: "Dias de semana, quando as diárias despencam, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-lisboa-booking-desconto",
+    title: "Hotéis em Lisboa com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Lisboa com 15% a 30% OFF no Booking.com. Baixa Chiado, Belém e hotéis com vista do Tejo com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Lisboa com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Lisboa com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Lisboa?", a: "Primavera e outono, com clima amado e preços suaves, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-porto-booking-desconto",
+    title: "Hotéis em Porto com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Porto com 15% a 30% OFF no Booking.com. Ribeira, caves de vinho do Porto e pousadas históricas com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Porto com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Porto com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Porto?", a: "Meia temporada, evitando o verão europeu, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-paris-booking-desconto",
+    title: "Hotéis em Paris com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Paris com 15% a 30% OFF no Booking.com. Hotéis perto dos Champs-Élysées e de Montmartre com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Paris com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Paris com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Paris?", a: "Janeiro–fevereiro e agosto, fora dos grandes eventos, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-londres-booking-desconto",
+    title: "Hotéis em Londres com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Londres com 15% a 30% OFF no Booking.com. Hotéis junto ao Thames e estações de trem com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Londres com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Londres com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Londres?", a: "Janeiro e fevereiro, os meses mais baratos da cidade, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-roma-booking-desconto",
+    title: "Hotéis em Roma com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Roma com 15% a 30% OFF no Booking.com. Hotéis no centro histórico perto do Coliseu com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Roma com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Roma com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Roma?", a: "Novembro e fevereiro, com filas menores e tarifas baixas, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-buenos-aires-booking-desconto",
+    title: "Hotéis em Buenos Aires com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Buenos Aires com 15% a 30% OFF no Booking.com. Palermo, Recoleta e hotéis boutique em San Telmo com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Buenos Aires com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Buenos Aires com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Buenos Aires?", a: "Primavera argentina (set–nov), com câmbio favorável, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-santiago-booking-desconto",
+    title: "Hotéis em Santiago com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Santiago com 15% a 30% OFF no Booking.com. Hotéis em Providencia e vista da cordilheira com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Santiago com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Santiago com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Santiago?", a: "Outono chileno (mar–mai), com tarifas amenas, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-cancun-booking-desconto",
+    title: "Hotéis em Cancún com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Cancún com 15% a 30% OFF no Booking.com. Resorts all inclusive na Zona Hotelera com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Cancún com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Cancún com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Cancún?", a: "Temporada baixa (ago–out), com all inclusive em conta, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-dubai-booking-desconto",
+    title: "Hotéis em Dubai com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Dubai com 15% a 30% OFF no Booking.com. Hotéis 5 estrelas na Marina e Downtown com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Dubai com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Dubai com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Dubai?", a: "Junho–setembro (calor) quando as diárias caem muito, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-toquio-booking-desconto",
+    title: "Hotéis em Tóquio com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Tóquio com 15% a 30% OFF no Booking.com. Shinjuku, Shibuya e hotéis cápsula premium com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Tóquio com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Tóquio com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Tóquio?", a: "Janeiro e junho, fora das festas de ano novo e flores, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-sydney-booking-desconto",
+    title: "Hotéis em Sydney com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Sydney com 15% a 30% OFF no Booking.com. Hotéis com vista da Opera House e Harbour Bridge com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Sydney com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Sydney com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Sydney?", a: "Maio–agosto (inverno australiano), tarifas bem menores, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-salvador-booking-desconto",
+    title: "Hotéis em Salvador com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Salvador com 15% a 30% OFF no Booking.com. Pelourinho, praia do Farol da Barra e resorts com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Salvador com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Salvador com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Salvador?", a: "Fora do carnaval, quando a cidade respira e os preços caem, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-recife-booking-desconto",
+    title: "Hotéis em Recife com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Recife com 15% a 30% OFF no Booking.com. Boa Viagem e hotéis com breakfast regional com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Recife com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Recife com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Recife?", a: "Fora do período de festas juninas e carnaval, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-fortaleza-booking-desconto",
+    title: "Hotéis em Fortaleza com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Fortaleza com 15% a 30% OFF no Booking.com. Praia do Futuro e resorts all inclusive com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Fortaleza com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Fortaleza com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Fortaleza?", a: "Segunda metade do ano, na high season cearense de vento, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-florianopolis-booking-desconto",
+    title: "Hotéis em Florianópolis com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Florianópolis com 15% a 30% OFF no Booking.com. Praias do norte da ilha e pousadas boutique com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Florianópolis com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Florianópolis com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Florianópolis?", a: "Março e novembro, com clima bom e menos multidão, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-curitiba-booking-desconto",
+    title: "Hotéis em Curitiba com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Curitiba com 15% a 30% OFF no Booking.com. Hotéis no centro histórico e perto do Jardim Botânico com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Curitiba com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Curitiba com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Curitiba?", a: "Fora do inverno rigoroso, em tarifas de meia temporada, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-bonito-booking-desconto",
+    title: "Hotéis em Bonito (MS) com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Bonito (MS) com 15% a 30% OFF no Booking.com. Pousadas com meia pensão perto do Rio da Prata com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Bonito (MS) com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Bonito (MS) com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Bonito (MS)?", a: "Fora das férias de janeiro e julho, com flutuações garantidas, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-maragogi-booking-desconto",
+    title: "Hotéis em Maragogi com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Maragogi com 15% a 30% OFF no Booking.com. Pousadas pé na areia das Galés (Caribe brasileiro) com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Maragogi com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Maragogi com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Maragogi?", a: "Fora do verão, com piscinas naturais menos cheias, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-bombinhas-booking-desconto",
+    title: "Hotéis em Bombinhas com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Bombinhas com 15% a 30% OFF no Booking.com. Praias de água clara e pousadas com vista com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Bombinhas com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Bombinhas com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Bombinhas?", a: "Setembro–novembro, antes da alta temporada catarinense, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
+  {
+    slug: "hoteis-arraial-dajuda-booking-desconto",
+    title: "Hotéis em Arraial d'Ajuda com Desconto no Booking 2026 (Até 30% OFF)",
+    meta_desc: "Reserve hotéis e pousadas em Arraial d'Ajuda com 15% a 30% OFF no Booking.com. Pousadas charmosas perto de Trancoso e Porto Seguro com cancelamento grátis e pagamento na chegada.",
+    h1: "🏨 Hotéis em Arraial d'Ajuda com Desconto Exclusivo",
+    brand: "booking",
+    badge: "✈️ VIAGENS & HOSPEDAGEM",
+    cta_text: "Ver Hotéis em Arraial d'Ajuda com Desconto ➔",
+    faq: [
+      { q: "Quando vale mais a pena reservar hotéis em Arraial d'Ajuda?", a: "Fora de janeiro, com clima ótimo e preços de baixa temporada, garantindo até 30% OFF e cancelamento grátis no Booking.com." }
+    ]
+  },
 ];
 
 function generateHtmlPage(tag) {
