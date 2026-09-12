@@ -19,8 +19,8 @@ const ADSTERRA_SOCIALBAR = {
   // NULL = SocialBar pendente no painel Adsterra → fail-closed: NÃO injeta nada.
   // PROIBIDO default cruzado: tag de host A nunca serve em host B (mismatch = descarte).
   'aquitemachadinhos.com.br': 'https://undergocutlery.com/a0/4b/ea/a04bea8f13eec4c1e3b87777107a3c6e.js',
-  'solvegrid.com.br': null,               // PENDENTE: gerar SocialBar (placement 31166085 / website 6042199)
-  'achadinhos-ad-engine.vercel.app': null, // PENDENTE: gerar SocialBar (placement 31180418 / website 6044306)
+  'solvegrid.com.br': 'https://undergocutlery.com/24/92/83/24928371ac3714c625a6644222607191.js',           // v128.5: SocialBar placement 31166085 (website 6042199) — código do painel
+  'achadinhos-ad-engine.vercel.app': 'https://undergocutlery.com/65/0f/e1/650fe1ea8c40a70c29031a35f6ac5e49.js', // v128.5: SocialBar placement 31180418 (website 6044306) — código do painel
   'nexusplataforma.ia.br': null            // PENDENTE: gerar SocialBar (placement 30879030 / website 6002104)
 };
 export async function onRequestGet({ request }) {
