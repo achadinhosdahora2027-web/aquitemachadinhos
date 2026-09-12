@@ -83,10 +83,33 @@ async function sendTelegramDeal(text, options = {}) {
   });
 }
 
+
+// ══════════════════════════════════════════════════════════════════════════
+// v128 — REGRA DE OURO DO CANAL: NENHUM link direto de varejo em post público.
+// Todo post sai envelopado pela rota /go (interstitial monetizável 1:1 do host).
+// Asserção fail-closed: se o texto final ainda contiver link cru, o post é
+// ABORTADO (nunca vai ao canal bypassando o interstitial).
+// ══════════════════════════════════════════════════════════════════════════
+const RAW_AFFILIATE_RE = /(https?:\/\/)?(www\.)?(amazon\.com\.br|amazon\.com\/[^ ]*\?tag=|amzn\.(to|eu|de)|meli\.la|mercadolivre\.com[.\/a-z]*|s\.shopee\.com\.br|shopee\.com\.br|s\.click\.aliexpress|aliexpress\.com|ebay\.com\/|booking\.com\/)/i;
+
+function buildGoLink(deal) {
+  const marcaMap = { 'Shopee': 'shopee', 'Amazon Brasil': 'amazon', 'Mercado Livre': 'mercadolivre', 'Booking.com': 'booking', 'NordVPN': 'nordvpn' };
+  const marca = marcaMap[deal.store] || 'auto';
+  const sid = ('telegram_ofertas_' + String(deal.id || 'deal').replace(/[^a-zA-Z0-9_]/g, '') + '_' + new Date().toISOString().slice(0, 10).replace(/-/g, '')).slice(0, 60);
+  return 'https://www.solvegrid.com.br/go?marca=' + encodeURIComponent(marca) + '&sid=' + sid;
+}
+
+function assertNoRawAffiliateLink(text) {
+  if (RAW_AFFILIATE_RE.test(text)) {
+    throw new Error('GUARDA v128: post com link direto de varejo detectado — envio ABORTADO (obrigatório envelope /go).');
+  }
+}
+
 function formatDealPost(deal, templateIndex = 0) {
   const storeBadge = deal.store === 'Shopee' ? '🛍️ Shopee Brasil' : (deal.store === 'Amazon Brasil' ? '📦 Amazon Brasil' : (deal.store === 'Booking.com' ? '🏨 Booking.com' : (deal.store === 'Mercado Livre' ? '⚡ Mercado Livre' : '🛡️ NordVPN')));
   
   const bulletsText = deal.bullets ? deal.bullets.map(b => `• ${b}`).join('\n') : '';
+  const postLink = buildGoLink(deal); // v128: envelope /go (interstitial 1:1 antes da oferta)
 
   const templates = [
     // Template 1: Achadinho Relâmpago
@@ -107,7 +130,7 @@ ${bulletsText}
 🚨 <i>Preço promocional por tempo limitado ou até esgotar o estoque!</i>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 👉 <b>COMPRE AQUI COM DESCONTO:</b>
-🔗 <a href="${deal.affiliate_url}">${deal.affiliate_url}</a>
+🔗 <a href="${postLink}">${postLink}</a>
 `,
 
     // Template 2: Baixou Demais
@@ -128,7 +151,7 @@ ${bulletsText}
 ⚡ <i>Aproveite antes que volte ao valor normal!</i>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🛒 <b>GARANTIR MINHA UNIDADE:</b>
-🔗 <a href="${deal.affiliate_url}">${deal.affiliate_url}</a>
+🔗 <a href="${postLink}">${postLink}</a>
 `,
 
     // Template 3: Oferta Verificada VIP
@@ -148,12 +171,14 @@ ${bulletsText}
 🚚 <i>Verifique o frete grátis aplicando o cupom no app!</i>
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 👉 <b>LINK OFICIAL DA OFERTA:</b>
-🔗 <a href="${deal.affiliate_url}">${deal.affiliate_url}</a>
+🔗 <a href="${postLink}">${postLink}</a>
 `
   ];
 
   const tIndex = templateIndex % templates.length;
-  return templates[tIndex].trim();
+  const finalText = templates[tIndex].trim();
+  assertNoRawAffiliateLink(finalText); // v128: fail-closed — aborta se ainda houver link cru
+  return finalText;
 }
 
 async function publishNextViralDeal(options = {}) {
@@ -192,6 +217,7 @@ async function publishNextViralDeal(options = {}) {
   console.log(`🏪 Loja: ${selectedDeal.store} | Preço: R$ ${selectedDeal.promo_price} (${selectedDeal.discount})`);
   console.log(`🚀 Despachando para o canal ${channel}...`);
 
+  assertNoRawAffiliateLink(postText); // v128: dupla verificação pré-disparo
   const result = await sendTelegramDeal(postText, { chatId: channel });
 
   if (result.sent) {

@@ -1,4 +1,6 @@
-// CF Pages Function — /go redirector v127 — FIX ADSTERRA+MONETAG LIVE
+// CF Pages Function — /go redirector v128 — SOVEREIGN HOST ALIGNMENT (1:1 fail-closed)
+// v128: SocialBar/Popunder bound 1:1 ao host (fonte da verdade: nexus_host_tag_alignment).
+// Host desconhecido → SEM tags (nunca tag de outro host = fim do mismatch/ads.txt descarte).
 const SB = 'https://etbxbaaaspdcoiakifbb.supabase.co';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0YnhiYWFhc3BkY29pYWtpZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NTE2OTcsImV4cCI6MjEwMjUyNzY5N30.529X__LRoPurMqRJBVmiI9EYY8wgIv3cefZ-nxSiKJ0';
 const ENGINE = 'https://achadinhos-ad-engine.vercel.app/api/ads/go';
@@ -13,7 +15,13 @@ const ADSTERRA_POPUNDER = {
   'achadinhos-ad-engine.vercel.app': 'https://undergocutlery.com/v6k6sq45dm?key=90f19ab095cebec116b7ee5f129e1b2b'
 };
 const ADSTERRA_SOCIALBAR = {
-  'aquitemachadinhos.com.br': 'https://undergocutlery.com/a0/4b/ea/a04bea8f13eec4c1e3b87777107a3c6e.js'
+  // v128 — binding 1:1 espelhado de nexus_host_tag_alignment (Supabase mestre).
+  // NULL = SocialBar pendente no painel Adsterra → fail-closed: NÃO injeta nada.
+  // PROIBIDO default cruzado: tag de host A nunca serve em host B (mismatch = descarte).
+  'aquitemachadinhos.com.br': 'https://undergocutlery.com/a0/4b/ea/a04bea8f13eec4c1e3b87777107a3c6e.js',
+  'solvegrid.com.br': null,               // PENDENTE: gerar SocialBar (placement 31166085 / website 6042199)
+  'achadinhos-ad-engine.vercel.app': null, // PENDENTE: gerar SocialBar (placement 31180418 / website 6044306)
+  'nexusplataforma.ia.br': null            // PENDENTE: gerar SocialBar (placement 30879030 / website 6002104)
 };
 export async function onRequestGet({ request }) {
   const u = new URL(request.url);
@@ -74,18 +82,25 @@ export async function onRequestGet({ request }) {
   const NOINT = u.searchParams.get('noint') === '1';
   const RH = { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer' };
   if (IS_BOT || NOINT) return new Response(null, { status: 302, headers: RH });
-  const hostLower = host.toLowerCase();
-  let popunderTag = ADSTERRA_POPUNDER['aquitemachadinhos.com.br'];
-  let socialbarTag = ADSTERRA_SOCIALBAR['aquitemachadinhos.com.br'];
+  const hostLower = host.toLowerCase().replace(/^www\./, '');
+  // v128 — fail-closed: default SEMPRE null; só injeta tag do PRÓPRIO host (match 1:1).
+  let popunderTag = null;
+  let socialbarTag = null;
   for (const dom in ADSTERRA_POPUNDER) {
-    if (hostLower.endsWith(dom)) { popunderTag = ADSTERRA_POPUNDER[dom]; break; }
+    if (hostLower === dom || hostLower.endsWith('.' + dom)) { popunderTag = ADSTERRA_POPUNDER[dom]; break; }
   }
   for (const dom in ADSTERRA_SOCIALBAR) {
-    if (hostLower.endsWith(dom)) { socialbarTag = ADSTERRA_SOCIALBAR[dom]; break; }
+    if (hostLower === dom || hostLower.endsWith('.' + dom)) { socialbarTag = ADSTERRA_SOCIALBAR[dom]; break; }
   }
+  // Cabeçalho de auditoria vivo (sem expor segredos: só bound/none)
+  const TAG_BINDING = 'pop=' + (popunderTag ? 'bound' : 'none') + ';sb=' + (socialbarTag ? 'bound' : 'none');
   const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const sd = esc(dest);
   const DWELL = 4000;
+  // v128 — nenhuma injeção com tag ausente (nunca T("null") em host sem binding)
+  let popHead = popunderTag ? 'T("' + popunderTag + '");' : '';
+  let popBody = popunderTag ? 'load("' + popunderTag + '", null, "adsterra_popunder"),' : '';
+  let popClick = popunderTag ? 'try{var s=document.createElement("script");s.src="' + popunderTag + '";s.async=true;document.body.appendChild(s)}catch(e){}' : 'try{}catch(e){}';
   let socialbarScriptHead = socialbarTag ? 'T("' + socialbarTag + '");' : '';
   let socialbarLoadBody = socialbarTag ? 'load("' + socialbarTag + '", null, "adsterra_socialbar"),' : '';
   const html = '<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8">'
@@ -107,7 +122,7 @@ export async function onRequestGet({ request }) {
     + '<link rel="dns-prefetch" href="https://quge5.com">'
     + '<link rel="dns-prefetch" href="https://6opo.com">'
     + '<script>(function(){function T(src,zone){try{var s=document.createElement("script");s.src=src;s.async=true;s.setAttribute("data-cfasync","false");if(zone)s.setAttribute("data-zone",zone);(document.head||document.documentElement).appendChild(s)}catch(e){}}'
-    + 'T("' + popunderTag + '");' + socialbarScriptHead
+    + popHead + socialbarScriptHead
     + 'T("https://quge5.com/88/tag.min.js","274860");T("https://quge5.com/88/tag.min.js","278800");'
     + 'T("https://auqot.com/pfe/current/tag.min.js?z=11691068");T("https://ekhay.com/vignette.min.js?z=11691067");T("https://b3mny.com/tag.min.js?z=11691066");'
     + 'T("https://auqot.com/pfe/current/tag.min.js?z=11771440");T("https://ekhay.com/vignette.min.js?z=11771438");T("https://b3mny.com/tag.min.js?z=11771437");})();<\/script>'
@@ -115,19 +130,19 @@ export async function onRequestGet({ request }) {
     + '<p>Se não avançar automaticamente, toque no botão.</p>'
     + '<a class="go" id="go" href="' + sd + '" rel="nofollow noopener">Continuar para a oferta</a>'
     + '<noscript><p><a href="' + sd + '" rel="nofollow noopener">Clique aqui para continuar</a></p></noscript>'
-    + '<div class="tags">Carregando ofertas verificadas • ' + site + ' • ' + sid.slice(-8) + ' • v127</div>'
+    + '<div class="tags">Carregando ofertas verificadas • ' + site + ' • ' + sid.slice(-8) + ' • v128</div>'
     + '</div>'
     + '<script>(function(){var DEST=' + JSON.stringify(dest) + ';var SITE="' + site + '";var SID="' + sid + '";'
     + 'function load(src,zone,name){return new Promise(function(res){try{var s=document.createElement("script");s.src=src;s.async=true;s.setAttribute("data-cfasync","false");if(zone)s.setAttribute("data-zone",zone);s.onload=function(){res("ok")};s.onerror=function(){res("err")};document.body.appendChild(s)}catch(e){res("err")}})}'
     + 'var tags=['
-    + 'load("' + popunderTag + '", null, "adsterra_popunder"),' + socialbarLoadBody
+    + popBody + socialbarLoadBody
     + 'load("https://quge5.com/88/tag.min.js","274860","monetag_274860"),load("https://quge5.com/88/tag.min.js","278800","monetag_278800")];'
     + 'if(Promise.allSettled)Promise.allSettled(tags);'
-    + 'var goBtn=document.getElementById("go");if(goBtn){goBtn.addEventListener("click",function(){try{var s=document.createElement("script");s.src="' + popunderTag + '";s.async=true;document.body.appendChild(s)}catch(e){}})}'
+    + 'var goBtn=document.getElementById("go");if(goBtn){goBtn.addEventListener("click",function(){' + popClick + '})}'
     + 'setTimeout(function(){try{location.replace(DEST)}catch(e){location.href=DEST}},' + DWELL + ');})();<\/script>'
     + '</body></html>';
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer' }
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer', 'X-Adsterra-Binding': TAG_BINDING }
   });
 }
