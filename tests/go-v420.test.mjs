@@ -21,8 +21,9 @@ try {
   globalThis.fetch = async () => new Response(null, { status: 307, headers: { location: 'https://example.invalid' } });
   let out = await mod.onRequestGet({ request: req('BR', 'https://meli.la/1U3rtgV') });
   assert.equal(out.status, 200);
-  assert.equal(out.headers.get('x-nexus-edge'), 'v420.0');
+  assert.equal(out.headers.get('x-nexus-edge'), 'v1510.0');
   assert.equal(out.headers.get('x-nexus-engine-probe'), 'healthy');
+  assert.equal(out.headers.get('x-adsterra-binding'), 'pop=bound;sb=bound');
 
   // 404: desvio direto Mercado Livre, com matt_tool verificado.
   globalThis.fetch = async () => new Response('not found', { status: 404 });
@@ -30,6 +31,7 @@ try {
   assert.equal(out.status, 302);
   assert.equal(out.headers.get('x-nexus-fallback'), 'direct');
   assert.equal(out.headers.get('x-nexus-engine-probe'), 'http_404');
+  assert.equal(out.headers.get('x-adsterra-binding'), 'pop=bound;sb=bound');
   assert.match(out.headers.get('location'), /^https:\/\/meli\.la\//);
   assert.match(out.headers.get('location'), /matt_tool=56714869/);
 
@@ -67,6 +69,8 @@ try {
   const elapsed = Date.now() - started;
   assert.equal(out.status, 302);
   assert.equal(out.headers.get('x-nexus-engine-probe'), 'timeout');
+  assert.equal(out.headers.get('x-adsterra-binding'), 'pop=bound;sb=bound');
+  // This is a local unit measurement, not a production-network latency SLA.
   assert.ok(elapsed < 50, `fallback excedeu 50 ms no teste local: ${elapsed} ms`);
 
   // Tier-1: fallback EPN contém exatamente a campanha declarada.

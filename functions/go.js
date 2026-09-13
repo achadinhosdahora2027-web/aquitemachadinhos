@@ -250,8 +250,21 @@ export async function onRequestGet({ request }) {
   const BOT_AD_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegrambot|headless|curl|wget|python|monitor|lighthouse|lexicore|skytab|claude|gptbot|ccbot|anthropic|perplexity|bytespider|applebot|amazonbot|semrush|ahrefs|mj12|dotbot|petalbot|dataforseo|uptimerobot|pingdom|pagespeed|node-fetch|axios|okhttp|java\/|go-http|libwww|scrapy|requests|aiohttp|postman|insomnia|mention_c|mention_ca|mention_car/i;
   const IS_BOT = !UA || BOT_AD_RE.test(UA);
   const NOINT = u.searchParams.get('noint') === '1';
+  const hostLower = host.toLowerCase().replace(/^www\./, '');
+  // Resolve binding before every exit path. A direct anti-404 fallback does not
+  // execute tags, but it must still expose the immutable 1:1 binding state.
+  let popunderTag = null;
+  let socialbarTag = null;
+  for (const dom in ADSTERRA_POPUNDER) {
+    if (hostLower === dom || hostLower.endsWith('.' + dom)) { popunderTag = ADSTERRA_POPUNDER[dom]; break; }
+  }
+  for (const dom in ADSTERRA_SOCIALBAR) {
+    if (hostLower === dom || hostLower.endsWith('.' + dom)) { socialbarTag = ADSTERRA_SOCIALBAR[dom]; break; }
+  }
+  const TAG_BINDING = 'pop=' + (popunderTag ? 'bound' : 'none') + ';sb=' + (socialbarTag ? 'bound' : 'none');
   const RH = { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer',
-               'X-Nexus-Edge': 'v420.0', 'X-Br-Lock': brLock, 'X-Slot-Dinamico': SLOT_DIN, 'X-Visitor-Country': CC || 'desconhecido' };
+               'X-Adsterra-Binding': TAG_BINDING, 'X-Nexus-Edge': 'v1510.0', 'X-Br-Lock': brLock,
+               'X-Slot-Dinamico': SLOT_DIN, 'X-Visitor-Country': CC || 'desconhecido' };
   if (IS_BOT || NOINT) return new Response(null, { status: 302, headers: RH });
 
   /* v420 — porta híbrida anti-404. O orçamento é absoluto desde a entrada da
@@ -275,18 +288,7 @@ export async function onRequestGet({ request }) {
     }
   }
 
-  const hostLower = host.toLowerCase().replace(/^www\./, '');
-  // v128 — fail-closed: default SEMPRE null; só injeta tag do PRÓPRIO host (match 1:1).
-  let popunderTag = null;
-  let socialbarTag = null;
-  for (const dom in ADSTERRA_POPUNDER) {
-    if (hostLower === dom || hostLower.endsWith('.' + dom)) { popunderTag = ADSTERRA_POPUNDER[dom]; break; }
-  }
-  for (const dom in ADSTERRA_SOCIALBAR) {
-    if (hostLower === dom || hostLower.endsWith('.' + dom)) { socialbarTag = ADSTERRA_SOCIALBAR[dom]; break; }
-  }
-  // Cabeçalho de auditoria vivo (sem expor segredos: só bound/none)
-  const TAG_BINDING = 'pop=' + (popunderTag ? 'bound' : 'none') + ';sb=' + (socialbarTag ? 'bound' : 'none');
+  // v128/v1510 — tags remain fail-closed and bound 1:1 to this host.
   const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   const sd = esc(dest);
   const DWELL = 4000;
@@ -336,6 +338,6 @@ export async function onRequestGet({ request }) {
     + '</body></html>';
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer', 'X-Adsterra-Binding': TAG_BINDING, 'X-Nexus-Edge': 'v420.0', 'X-Nexus-Engine-Probe': 'healthy', 'Server-Timing': 'edge;dur=' + (Date.now() - edgeStarted) }
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer', 'X-Adsterra-Binding': TAG_BINDING, 'X-Nexus-Edge': 'v1510.0', 'X-Nexus-Engine-Probe': 'healthy', 'Server-Timing': 'edge;dur=' + (Date.now() - edgeStarted) }
   });
 }
