@@ -1,0 +1,63 @@
+name: Publicar no Cloudflare Pages (www oficial)
+
+# POR QUE ESTE WORKFLOW EXISTE
+# O domínio público (www.aquitemachadinhos.com.br e o apex) é um CNAME para
+# aquitem-21j.pages.dev (projeto Pages "aquitem"), NÃO o Vercel. Os deploys nele
+# eram ad-hoc (sem vínculo com commit) e o último deixou o site pela metade:
+# só a raiz foi publicada, as 3.400 páginas de cidade davam 404 e o sitemap estava
+# com 3.229 URLs contra 3.400 do repositório. Ou seja: o SEO não estava no ar.
+# Agora todo push em main republica o site completo, automático.
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: cloudflare-pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preparar pasta de publicação (site + Pages Functions)
+        run: |
+          # o site vive em public/ e as Functions ficam na raiz do repositório.
+          # No deploy direto do Pages, as Functions precisam estar DENTRO da pasta
+          # enviada — sem este passo o /go e o /api/supabase parariam de funcionar.
+          mkdir -p /tmp/site
+          cp -r public/. /tmp/site/
+          cp -r functions /tmp/site/functions
+          echo "arquivos: $(find /tmp/site -type f | wc -l)"
+          echo "páginas html: $(find /tmp/site -name '*.html' | wc -l)"
+          echo "functions: $(find /tmp/site/functions -type f | wc -l)"
+
+      - name: Publicar no Pages (projeto aquitem)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Secret CLOUDFLARE_API_TOKEN ausente — não é possível publicar."
+            exit 1
+          fi
+          npx --yes wrangler@3 pages deploy /tmp/site \
+            --project-name aquitem \
+            --branch main \
+            --commit-dirty=true
+
+      - name: Conferir o que ficou no ar
+        run: |
+          set -e
+          for u in "https://aquitem-21j.pages.dev/" "https://aquitem-21j.pages.dev/br/santos" \
+                   "https://aquitem-21j.pages.dev/it/roma" "https://aquitem-21j.pages.dev/og-image.png" \
+                   "https://aquitem-21j.pages.dev/go?brand=shopee&site=workflow"; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' -m 25 "$u")
+            echo "  $code  $u"
+            case "$code" in 2*|3*) ;; *) echo "::error::FALHOU em $u (HTTP $code)"; exit 1;; esac
+          done
