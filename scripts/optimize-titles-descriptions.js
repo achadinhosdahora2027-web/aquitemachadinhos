@@ -49,6 +49,37 @@ const REPORT = path.join(__dirname, '..', 'data', 'seo-title-description-report.
 
 const argv = process.argv.slice(2);
 const CHECK_ONLY = argv.includes('--check');
+/* --trim-only: NAO reescreve o texto. Pega o titulo/descricao que a pagina ja
+   tem (feito por um redator humano) e apenas corta no limite de caracteres, no
+   limite de palavra — usado nas familias que nao sao paginas de cidade
+   (compatibilidade astral, tags de cupom, paginas institucionais), onde o
+   template de viagem "voos baratos, hoteis" nao faz sentido. */
+const TRIM_ONLY = argv.includes('--trim-only');
+
+/** Corte de titulo preferindo separadores naturais (" | ", " — ", " - "). */
+function trimTitle(text, max) {
+  if (text.length <= max) return text;
+  for (const sep of [' | ', ' — ', ' – ', ' - ', ': ']) {
+    const parts = text.split(sep);
+    for (let keep = parts.length - 1; keep >= 1; keep--) {
+      const cand = parts.slice(0, keep).join(sep);
+      if (cand.length <= max && cand.length >= 25) return cand;
+    }
+  }
+  const cut = text.slice(0, max);
+  const sp = cut.lastIndexOf(' ');
+  return (sp > max * 0.6 ? cut.slice(0, sp) : cut).replace(/[\s,;:–—-]+$/, '');
+}
+
+/** Corte de descricao preferindo fim de frase. */
+function trimDescription(text, max) {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastDot = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+  if (lastDot > max * 0.55) return cut.slice(0, lastDot + 1);
+  const sp = cut.lastIndexOf(' ');
+  return (sp > max * 0.6 ? cut.slice(0, sp) : cut).replace(/[\s,;:–—-]+$/, '');
+}
 const LIMIT = (() => {
   const i = argv.indexOf('--limit');
   return i > -1 && argv[i + 1] ? parseInt(argv[i + 1], 10) : Infinity;
@@ -125,7 +156,15 @@ function pageFacts(file, html, nodes) {
   if (!facts.city) {
     const h1 = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
     if (h1) {
-      facts.city = h1[1].replace(/<[^>]+>/g, '').replace(/^[\p{Emoji}\s]+/u, '').split(/[—–|-]/)[0].trim();
+      /* BUG CORRIGIDO: o strip antigo usava [\p{Emoji}\s] e deixava o VARIATION
+         SELECTOR (U+FE0F) e o ZWJ (U+200D) orfaos — o titulo do index virou
+         "️ Aqui Tem Achadinhos...". Agora remove pictogramas + seletores + ZWJ. */
+      facts.city = h1[1]
+        .replace(/<[^>]+>/g, '')
+        .replace(/[\p{Extended_Pictographic}\uFE0F\u200D\u20E3]/gu, '')
+        .split(/[—–|-]/)[0]
+        .replace(/\s+/g, ' ')
+        .trim();
     }
   }
   if (!facts.city) {
@@ -289,8 +328,8 @@ function main() {
 
     const nodes = flattenLd(parseJsonLd(html));
     const facts = pageFacts(f, html, nodes);
-    const newTitle = buildTitle(facts);
-    const newDesc = buildDescription(facts);
+    const newTitle = TRIM_ONLY ? trimTitle(curTitle, TITLE_MAX) : buildTitle(facts);
+    const newDesc = TRIM_ONLY ? trimDescription(curDesc, DESC_MAX) : buildDescription(facts);
 
     if (!newTitle || !newDesc) { stats.semDados++; continue; }
 

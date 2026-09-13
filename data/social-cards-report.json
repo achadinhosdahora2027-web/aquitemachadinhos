@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-09-13T01:53:18.257Z",
+  "og_image": "https://www.aquitemachadinhos.com.br/og-image.png",
+  "og_image_existe_no_repo": true,
+  "modo": "aplicado",
+  "stats": {
+    "total": 3405,
+    "semOgImage": 3401,
+    "comOgImagePropria": 1,
+    "alterados": 3401,
+    "jaCompletos": 1,
+    "semCanonical": 0
+  },
+  "amostra": [
+    {
+      "file": "404.html",
+      "og_url": "https://www.aquitemachadinhos.com.br/404.html"
+    },
+    {
+      "file": "ad/andorra-a-velha.html",
+      "og_url": "https://www.aquitemachadinhos.com.br/ad/andorra-a-velha"
+    },
+    {
+      "file": "ad/arinsal.html",
+      "og_url": "https://www.aquitemachadinhos.com.br/ad/arinsal"
+    },
+    {
+      "file": "ad/canillo.html",
+      "og_url": "https://www.aquitemachadinhos.com.br/ad/canillo"
+    },
+    {
+      "file": "ad/encamp.html",
+      "og_url": "https://www.aquitemachadinhos.com.br/ad/encamp"
+    }
+  ]
+}
