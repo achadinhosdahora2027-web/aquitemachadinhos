@@ -23,11 +23,61 @@ const ADSTERRA_SOCIALBAR = {
   'achadinhos-ad-engine.vercel.app': 'https://undergocutlery.com/65/0f/e1/650fe1ea8c40a70c29031a35f6ac5e49.js', // v128.5: SocialBar placement 31180418 (website 6044306) — código do painel
   'nexusplataforma.ia.br': null            // PENDENTE: gerar SocialBar (placement 30879030 / website 6002104)
 };
+/* ══════════════════════════════════════════════════════════════════════════
+   v340.0 — SOVEREIGN GEO-TARGETING CORE (borda Cloudflare)
+   ──────────────────────────────────────────────────────────────────────────
+   DEFEITO MEDIDO QUE ISTO CORRIGE: esta função chamava o motor do lado
+   servidor (fetch de borda). O motor lia x-vercel-ip-country e via o IP da
+   CLOUDFLARE — não o do visitante. Resultado: brasileiro podia ser classificado
+   como US/EU e receber merchant em moeda estrangeira (Booking UK, eBay, Amazon).
+   Agora o país vem de request.cf.country (IP real do visitante), viaja como
+   geo=<CC>&geoforce=1 para o motor e ainda é conferido AQUI: para visitante
+   humano brasileiro, nenhum destino de moeda estrangeira passa.
+   ══════════════════════════════════════════════════════════════════════════ */
+const MOEDA_ESTRANGEIRA_BRANDS = ['booking','booking_uk','booking_latam','ebay','ebay_us','amazon','amazon_us','aliexpress','udemy','nordvpn','economybookings','brunoyam'];
+const HOST_MOEDA_ESTRANGEIRA = /(^|\.)(booking\.com|ebay\.(com|co\.uk|de|fr|it|es|ca)|amazon\.(com|co\.uk|de|fr|es|it|ca)|aliexpress\.com|udemy\.com|nordvpn\.com|economybookings\.com)$/i;
+const SLOTS_SINTETICOS = ['_health_desktop','health','_health','health_desktop'];
+
+function arquiteturaUA(ua) {
+  const s = String(ua || '').toLowerCase();
+  if (!s || s.length < 20) return 'desconhecido';
+  if (/bot|crawl|spider|slurp|headless|preview|scan|curl|wget|python|java|okhttp|libwww|httpclient|monitor|synthetic|lighthouse|pagespeed/.test(s)) return 'bot';
+  if (/ipad|tablet/.test(s)) return 'tablet';
+  if (/mobile|android|iphone/.test(s)) return 'mobile';
+  return 'desktop';
+}
+function slugKeyword(t) {
+  return String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '').slice(0, 40);
+}
+/* Slot dinâmico: termo REAL buscado na página + arquitetura do user-agent.
+   Nunca slot sintético: se não há termo real, fica 'sem_keyword_<arquitetura>'. */
+function slotDinamicoCF(termo, ua) {
+  const kw = slugKeyword(termo);
+  const arch = arquiteturaUA(ua);
+  if (!kw || /^[0-9]+$/.test(kw) || SLOTS_SINTETICOS.includes(kw)) return 'sem_keyword_' + arch;
+  return kw + '_' + arch;
+}
+function destinoMoedaEstrangeira(url) {
+  try {
+    const h = new URL(url).hostname.toLowerCase();
+    if (/(kqzyfj|jdoqocy|dpbolvw|anrdoezrs|tkqlhce)\.(com|net)/i.test(h)) return true;
+    return HOST_MOEDA_ESTRANGEIRA.test(h);
+  } catch (e) { return false; }
+}
+
 export async function onRequestGet({ request }) {
   const u = new URL(request.url);
   const marca = (u.searchParams.get('marca') || '').trim().slice(0, 60);
   const oferta = (u.searchParams.get('oferta') || '').trim();
   const host = u.hostname || '';
+  const UA_PRE = String(request.headers.get('user-agent') || '');
+  /* IP REAL do visitante (borda Cloudflare) — não o IP de quem chama o motor */
+  const CC = String((request.cf && request.cf.country) || request.headers.get('cf-ipcountry') || '').toUpperCase().slice(0, 2);
+  const GEOQ = '&geo=' + (CC || 'BR') + '&geoforce=1';
+  /* Termo REAL que trouxe o visitante: busca da página, oferta ou marca. */
+  const TERMO = (u.searchParams.get('q') || u.searchParams.get('busca') || u.searchParams.get('kw') || oferta || marca || '');
+  const SLOT_DIN = slotDinamicoCF(TERMO, UA_PRE);
   const site = host.indexOf('nexusplataforma') >= 0 ? 'nexus' : host.indexOf('solvegrid') >= 0 ? 'solvegrid' : 'aquitemachadinhos';
   const PID = site === 'nexus' ? '101870639' : site === 'solvegrid' ? '101870640' : '101859672';
   const sidIn = (u.searchParams.get('sid') || '').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 60);
@@ -56,18 +106,18 @@ export async function onRequestGet({ request }) {
       const adv = ((row.advertiser || '') + ' ' + (row.name || '')).toLowerCase().replace(/[^a-z0-9 ]/g, ' ');
       for (const b of BRANDS) {
         if (adv.indexOf(b) >= 0) {
-          dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=oferta_' + sid.slice(-8) + (cjDirect ? '&dest=' + encodeURIComponent(cjDirect) : '');
+          dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=' + SLOT_DIN + '&keyword=' + encodeURIComponent(TERMO || b) + GEOQ + (cjDirect ? '&dest=' + encodeURIComponent(cjDirect) : '');
           break;
         }
       }
     }
-    if (!dest) dest = cjDirect || (ENGINE + '?brand=auto&site=' + site + '&slot=oferta_geo');
+    if (!dest) dest = cjDirect || (ENGINE + '?brand=auto&site=' + site + '&slot=' + SLOT_DIN + '&keyword=' + encodeURIComponent(TERMO || 'oferta') + GEOQ);
   }
   if (!dest && marca) {
     const mk = marca.toLowerCase().replace(/[^a-z0-9]/g, '');
     for (const b of BRANDS) {
       if (mk.indexOf(b) >= 0 || b.indexOf(mk) >= 0) {
-        dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=marca_' + sid.slice(-8);
+        dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=' + SLOT_DIN + '&keyword=' + encodeURIComponent(TERMO || marca) + GEOQ;
         break;
       }
     }
@@ -84,17 +134,41 @@ export async function onRequestGet({ request }) {
   if (dest && dest.indexOf('achadinhos-ad-engine') < 0
       && /s\.shopee\.com|meli\.la|ebay\.com\/deals/.test(dest)) {
     const b = /shopee/.test(dest) ? 'shopee' : (/meli\.la|mercadolivre/.test(dest) ? 'mercadolivre' : 'ebay');
-    dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=go_' + sid.slice(-8) + '&dest=' + encodeURIComponent(dest);
+    dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=' + SLOT_DIN + '&keyword=' + encodeURIComponent(TERMO || b) + GEOQ + '&dest=' + encodeURIComponent(dest);
   }
   if (!dest) dest = site === 'solvegrid' ? 'https://www.solvegrid.com.br/' : site === 'nexus' ? 'https://nexusplataforma.ia.br/' : 'https://www.aquitemachadinhos.com.br/';
   if (dest.indexOf('achadinhos-ad-engine.vercel.app') >= 0 && dest.indexOf('noint=') < 0) {
     dest += (dest.indexOf('?') >= 0 ? '&' : '?') + 'noint=1';
   }
+  /* ══ TRAVA NACIONAL BR (borda) ══════════════════════════════════════════
+     Segunda barreira: se por qualquer caminho o destino saiu com marca de moeda
+     estrangeira (ou host de merchant internacional) para um visitante humano
+     brasileiro, ele é trocado por Shopee Brasil / meli.la. O visitante NUNCA
+     fica travado: recebe o link nativo e segue.                                */
+  let brLock = CC === 'BR' ? 'br_humano' : (CC ? 'nao_br' : 'sem_pais');
+  if (CC === 'BR') {
+    const uaTxt = String(request.headers.get('user-agent') || '');
+    const botBorda = !uaTxt || /bot|crawl|spider|slurp|preview|headless|curl|wget|python|monitor|lighthouse|pagespeed|node-fetch|axios|okhttp|java\/|go-http/i.test(uaTxt);
+    if (!botBorda) {
+      const mBrand = dest.match(/[?&]brand=([a-z_]+)/i);
+      const brandAtual = mBrand ? mBrand[1].toLowerCase() : '';
+      if (MOEDA_ESTRANGEIRA_BRANDS.indexOf(brandAtual) >= 0 || destinoMoedaEstrangeira(dest)) {
+        const qs = 'brand=shopee&site=' + site + '&slot=' + SLOT_DIN + '&keyword=' + encodeURIComponent(TERMO || 'oferta') + GEOQ;
+        dest = dest.indexOf('achadinhos-ad-engine') >= 0
+          ? dest.replace(/([?&])brand=[a-z_]+/i, '$1brand=shopee')
+          : ENGINE + '?' + qs;
+        if (dest.indexOf('achadinhos-ad-engine') >= 0 && dest.indexOf('noint=') < 0) dest += '&noint=1';
+        brLock = 'aplicada';
+      } else { brLock = 'nativa'; }
+    } else { brLock = 'br_bot'; }
+  }
+
   const UA = String(request.headers.get('user-agent') || '');
   const BOT_AD_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegrambot|headless|curl|wget|python|monitor|lighthouse|lexicore|skytab|claude|gptbot|ccbot|anthropic|perplexity|bytespider|applebot|amazonbot|semrush|ahrefs|mj12|dotbot|petalbot|dataforseo|uptimerobot|pingdom|pagespeed|node-fetch|axios|okhttp|java\/|go-http|libwww|scrapy|requests|aiohttp|postman|insomnia|mention_c|mention_ca|mention_car/i;
   const IS_BOT = !UA || BOT_AD_RE.test(UA);
   const NOINT = u.searchParams.get('noint') === '1';
-  const RH = { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer' };
+  const RH = { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer',
+               'X-Nexus-Edge': 'v340.0', 'X-Br-Lock': brLock, 'X-Slot-Dinamico': SLOT_DIN, 'X-Visitor-Country': CC || 'desconhecido' };
   if (IS_BOT || NOINT) return new Response(null, { status: 302, headers: RH });
   const hostLower = host.toLowerCase().replace(/^www\./, '');
   // v128 — fail-closed: default SEMPRE null; só injeta tag do PRÓPRIO host (match 1:1).
