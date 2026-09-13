@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-09-13T01:47:06.812Z",
+  "idempotente": true,
+  "tags": {
+    "adsense": "<script async src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5604700207394147\" crossorigin=\"anonymous\"></script>",
+    "infolinks": "<script type=\"text/javascript\" src=\"//resources.infolinks.com/js/infolinks_main.js\"></script>",
+    "growth": "<script src=\"/js/growth-cro-engine.js\" defer></script>",
+    "monetag": [
+      "<script data-cfasync=\"false\" src=\"https://quge5.com/88/tag.min.js\" data-zone=\"274860\" async></script>",
+      "<script data-cfasync=\"false\" src=\"https://quge5.com/88/tag.min.js\" data-zone=\"278800\" async></script>"
+    ]
+  },
+  "antes": {
+    "total": 3405,
+    "adsense": 3405,
+    "infolinks": 3405,
+    "growth": 3405,
+    "monetag": 3405,
+    "any": 3405,
+    "all": 3405
+  },
+  "depois": {
+    "total": 3405,
+    "adsense": 3405,
+    "infolinks": 3405,
+    "growth": 3405,
+    "monetag": 3405,
+    "any": 3405,
+    "all": 3405
+  },
+  "paginas_alteradas": 0,
+  "paginas_intactas": 3405,
+  "erros": [],
+  "amostra_alteradas": []
+}

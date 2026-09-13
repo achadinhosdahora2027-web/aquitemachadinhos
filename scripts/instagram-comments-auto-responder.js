@@ -291,9 +291,17 @@ async function main() {
 
   const report = {
     generated_at: new Date().toISOString(),
-    mode: cred.ready_to_publish ? 'PUBLICACAO_AUTOMATICA_DISPONIVEL' : 'GERADOR_DE_RASCUNHOS',
+    mode: cred.ready_to_publish ? 'TOKENS_OK_PUBLICACAO_AINDA_NAO_IMPLEMENTADA' : 'GERADOR_DE_RASCUNHOS_SEM_TOKEN',
+    /* Este script NAO chama a API de comentarios do Instagram — mesmo quando os
+       tokens existem. O diagnostico de credenciais mostrou que os tokens Meta do
+       repositorio SAO validos (paginas "Aqui Tem", "Achadinhos da Hora - Cupons"),
+       mas ler/responder comentarios exige permissao instagram_manage_comments e
+       chamada de API que ainda nao esta escrita aqui. Preferimos dizer isso a
+       imprimir "100% OPERACIONAL" como a versao anterior fazia. */
     publishes_to_instagram: false,
-    publish_blocker: cred.ready_to_publish ? null : 'Contas Meta em data/meta-config.json contem apenas placeholders (ex.: "ENV:META_PAGE_TOKEN_A") e nao existe variavel META_* no ambiente.',
+    publish_blocker: cred.ready_to_publish
+      ? 'Tokens Meta validos, mas a chamada de API para ler/responder comentarios (instagram_manage_comments) ainda nao foi implementada neste script.'
+      : 'Contas Meta em data/meta-config.json contem apenas placeholders (ex.: "ENV:META_PAGE_TOKEN_A") e nao existe variavel META_* no ambiente.',
     matrix_version: matrix.version || null,
     advertisers_available: (matrix.advertisers || []).map((a) => a.brand),
     meta_credentials: cred,
@@ -311,7 +319,11 @@ async function main() {
   console.log(`  🔗 Links tageados aprovados ...: ${linksOk}`);
   console.log(`  ⚪ Marcas sem CPA ativo .......: ${semCpaCount} (link entregue, sem comissao)`);
   console.log(`  ❌ Links reprovados ...........: ${linksFalha}`);
-  console.log(`  🚫 Publica no Instagram? ......: NAO (${report.publish_blocker ? 'sem credencial Meta' : 'publica'})`);
+  console.log(`  🚫 Publica no Instagram? ......: NAO — gerador de rascunhos`);
+  if (cred.ready_to_publish) {
+    console.log(`     (os tokens Meta do repositório SÃO válidos; falta a chamada de API de`);
+    console.log(`      comentários — instagram_manage_comments — que este script não implementa)`);
+  }
   console.log(`  📄 Arquivo: ${path.relative(process.cwd(), DRAFTS_FILE)}`);
   console.log('═══════════════════════════════════════════════════════════════════════');
 
