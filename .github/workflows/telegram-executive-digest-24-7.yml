@@ -1,0 +1,78 @@
+name: Telegram Painel Executivo 24/7 (Digest Admin)
+
+# NOTA DE ARQUITETURA (auditoria 13/09/2026):
+# Este repo (aquitemachadinhos) e o UNICO autorizado a despachar o PAINEL CONSOLIDADO
+# (notify-engine.js recusa o envio quando GITHUB_REPOSITORY != .../aquitemachadinhos).
+# A publicacao de OFERTAS nos grupos foi centralizada no repo achadinhos-ad-engine
+# (workflow "Telegram Ofertas Brasil 24/7 Autopilot (Multi-Destino)") para nao duplicar.
+
+on:
+  schedule:
+    - cron: "15 */2 * * *"   # a cada 2 horas, 15 min depois do orquestrador
+    - cron: "45 12 * * *"    # resumo do meio-dia (Brasilia 09:45)
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Ignorar cooldown de 45 min"
+        type: boolean
+        default: true
+      test_sale:
+        description: "Disparar uma notificacao de VENDA de teste"
+        type: boolean
+        default: false
+
+concurrency:
+  group: telegram-executive-digest
+  cancel-in-progress: false
+
+env:
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+
+jobs:
+  executive-digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: "1. Autodescoberta de grupos de Telegram pendentes"
+        run: node scripts/telegram-multi-destination.js --discover-only || true
+
+      - name: "2. Despachar Painel Consolidado (dados reais do banco)"
+        run: |
+          if [ "${{ inputs.test_sale }}" = "true" ]; then
+            node scripts/telegram-autonomous-notifier.js --test-sale
+          elif [ "${{ inputs.force }}" = "true" ]; then
+            node scripts/telegram-autonomous-notifier.js --force
+          else
+            node scripts/telegram-autonomous-notifier.js
+          fi
+
+      - name: "3. Persistir ledger e destinos"
+        if: always()
+        run: |
+          git config user.name "telegram-autopilot[bot]"
+          git config user.email "telegram-autopilot@users.noreply.github.com"
+          git add data/autonomous-state-ledger.json 2>/dev/null || true
+          git add data/telegram-destinations.json 2>/dev/null || true
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(telegram): ledger do painel executivo [skip ci]"
+            git pull --rebase --autostash origin main || true
+            git push origin main || echo "push falhou (sem impacto na entrega)"
+          else
+            echo "Nada a persistir."
+          fi

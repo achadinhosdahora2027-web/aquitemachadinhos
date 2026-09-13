@@ -2,12 +2,6 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "crons": [
-    {
-      "path": "/api/cron-autopilot",
-      "schedule": "0 3 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/sw.js",

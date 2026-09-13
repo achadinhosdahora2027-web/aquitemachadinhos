@@ -1,0 +1,39 @@
+name: Telegram Entrega 24/7 — Verificador de Integridade
+
+# Este workflow NAO publica ofertas (isso e responsabilidade do repo
+# achadinhos-ad-engine, workflow "Telegram Ofertas Brasil 24/7 Autopilot
+# (Multi-Destino)"). Antes, AMBOS os repos publicavam no mesmo canal usando
+# historicos separados -> risco de oferta duplicada e espalhamento.
+#
+# Aqui o papel e CONFERIR que a entrega aconteceu de verdade e gritar quando
+# algum destino parou de receber. Verificacao ativa, sem publicar.
+
+on:
+  schedule:
+    - cron: "50 11,14,17,20,22,0,2 * * *"  # 20 min depois de cada disparo do publicador
+    - cron: "5 12 * * *"                   # varredura diaria de sanidade
+  workflow_dispatch:
+
+concurrency:
+  group: telegram-delivery-verify
+  cancel-in-progress: false
+
+env:
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Verificar cada destino de Telegram (chat existe + bot pode escrever)
+        run: node scripts/telegram-verify-delivery.js
