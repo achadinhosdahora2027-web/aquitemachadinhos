@@ -53,11 +53,20 @@ jobs:
 
       - name: Conferir o que ficou no ar
         run: |
-          set -e
+          # A propagação do Pages leva alguns segundos depois do deploy; sem as
+          # tentativas o workflow falhava por pressa (não por defeito no site).
+          falhou=0
           for u in "https://aquitem-21j.pages.dev/" "https://aquitem-21j.pages.dev/br/santos" \
                    "https://aquitem-21j.pages.dev/it/roma" "https://aquitem-21j.pages.dev/og-image.png" \
+                   "https://www.aquitemachadinhos.com.br/br/santos" \
                    "https://aquitem-21j.pages.dev/go?brand=shopee&site=workflow"; do
-            code=$(curl -s -o /dev/null -w '%{http_code}' -m 25 "$u")
-            echo "  $code  $u"
-            case "$code" in 2*|3*) ;; *) echo "::error::FALHOU em $u (HTTP $code)"; exit 1;; esac
+            ok=0
+            for tentativa in 1 2 3 4 5 6 7 8; do
+              code=$(curl -s -o /dev/null -w '%{http_code}' -m 25 "$u")
+              case "$code" in 2*|3*) ok=1; break;; esac
+              sleep 10
+            done
+            echo "  $code  $u  (tentativas: $tentativa)"
+            [ "$ok" = "1" ] || falhou=1
           done
+          [ "$falhou" = "0" ] || { echo "::error::alguma URL não respondeu 2xx/3xx após 8 tentativas"; exit 1; }
