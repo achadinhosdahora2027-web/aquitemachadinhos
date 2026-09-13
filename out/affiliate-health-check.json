@@ -2,7 +2,7 @@
   "site": "aquitem",
   "pid": "101859672",
   "host": "https://www.aquitemachadinhos.com.br",
-  "quando": "2026-09-13T01:41:18.988Z",
+  "quando": "2026-09-13T01:56:09.402Z",
   "stat": {
     "paginas_html": 3405,
     "paginas_cidade": 3200,
@@ -49,7 +49,14 @@
     "sitemap-guias-turisticos.xml: 7 URLs batem com o disco",
     "sitemap-index.xml: 4 URLs batem com o disco",
     "sitemap-mundial-paises.xml: 3101 URLs batem com o disco",
-    "sitemap.xml: 3400 URLs batem com o disco"
+    "sitemap.xml: 3400 URLs batem com o disco",
+    "live /: 200",
+    "live /pag-nao-existe-canario-1789264568929: 404",
+    "live /br/ananindeua: 200",
+    "live /br/anapolis: 200",
+    "live /br/aparecida-de-goiania: 200",
+    "live /zw/mutare: 200",
+    "live /zw/victoria-falls: 200"
   ],
   "warn": [
     "ad/arinsal.html: lista curta (2 atração(ões) reais — sem inventar preenchimento)",

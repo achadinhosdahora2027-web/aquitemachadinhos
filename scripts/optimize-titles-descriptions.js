@@ -127,8 +127,22 @@ function pageFacts(file, html, nodes) {
     const t = n['@type'];
     return t === 'City' || (Array.isArray(t) && t.includes('City'));
   });
+  /* Nomes genericos vindos do proprio JSON-LD (ex.: "Cidade-Estado" nas paginas
+     de Monaco e Singapura) nao identificam a cidade — e produzem descricao
+     DUPLICADA entre paginas diferentes, o que o canario acusa como falha fatal.
+     Nesses casos o h1 traz a cidade real depois do travessao ("— Mônaco"). */
+  const GENERIC_NAMES = new Set(['cidade-estado', 'cidade estado', 'cidade', 'city', 'cidade-estado,']);
   if (city) {
-    facts.city = city.name || null;
+    const rawName = (city.name || '').trim();
+    if (GENERIC_NAMES.has(rawName.toLowerCase())) {
+      const h1m = html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+      if (h1m) {
+        const parts = h1m[1].replace(/<[^>]+>/g, '').split(/[—–]/);
+        const real = (parts[parts.length - 1] || '').replace(/[\p{Extended_Pictographic}\uFE0F\u200D]/gu, '').trim();
+        if (real && real.length >= 3 && real.length <= 40) { facts.city = real; facts.country = facts.country || null; }
+      }
+    }
+    facts.city = facts.city || rawName || null;
     const addr = city.address || {};
     facts.country = (typeof addr === 'object' && addr.addressCountry) || city.addressCountry || null;
     if (facts.country && typeof facts.country === 'object') facts.country = facts.country.name || null;
