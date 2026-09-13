@@ -382,7 +382,9 @@ const TAG_DEFINITIONS = [
 function generateHtmlPage(tag) {
   const affiliateUrl = tag.direct_url || `https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=${tag.brand}&site=tag_seo&slot=${tag.slug}`;
   const relAttr = tag.direct_url ? 'nofollow noopener noreferrer' : 'sponsored noopener noreferrer nofollow';
-  const canonicalUrl = `${DOMAIN}/tags/${tag.slug}.html`;
+  // AUDITORIA 13/09/2026: canônico NUNCA com .html — o cleanUrls do Vercel
+  // responde 301 em /x.html, então um canônico com .html aponta para um redirect.
+  const canonicalUrl = `${DOMAIN}/tags/${tag.slug}`;
 
   return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -429,7 +431,7 @@ function generateHtmlPage(tag) {
 <body>
 
   <div class="wrap">
-    <a href="/links.html" style="color:#94a3b8; text-decoration:none; font-size:0.85rem; font-weight:600;">➔ Voltar para Todos os Links & Cupons</a>
+    <a href="/links" style="color:#94a3b8; text-decoration:none; font-size:0.85rem; font-weight:600;">➔ Voltar para Todos os Links & Cupons</a>
     
     <span class="badge">${tag.badge}</span>
     <h1>${tag.h1}</h1>
@@ -459,9 +461,9 @@ function generateHtmlPage(tag) {
 
     <!-- Navigation Hubs -->
     <div style="text-align:center; margin-top:20px;">
-      <a href="/entretenimento.html" style="color:#38bdf8; font-size:0.85rem; margin:0 8px;">Tarot 3D</a> •
-      <a href="/o-que-fazer-em-gramado.html" style="color:#38bdf8; font-size:0.85rem; margin:0 8px;">Guia Gramado</a> •
-      <a href="/links.html" style="color:#38bdf8; font-size:0.85rem; margin:0 8px;">Bio VIP</a>
+      <a href="/entretenimento" style="color:#38bdf8; font-size:0.85rem; margin:0 8px;">Tarot 3D</a> •
+      <a href="/o-que-fazer-em-gramado" style="color:#38bdf8; font-size:0.85rem; margin:0 8px;">Guia Gramado</a> •
+      <a href="/links" style="color:#38bdf8; font-size:0.85rem; margin:0 8px;">Bio VIP</a>
     </div>
 
   </div>

@@ -1,0 +1,162 @@
+{
+  "generated_at": "2026-09-13T01:41:20.494Z",
+  "mode": "GERADOR_DE_RASCUNHOS",
+  "publishes_to_instagram": false,
+  "publish_blocker": "Contas Meta em data/meta-config.json contem apenas placeholders (ex.: \"ENV:META_PAGE_TOKEN_A\") e nao existe variavel META_* no ambiente.",
+  "matrix_version": "2026.3+MONETIZATION-FLAGGED",
+  "advertisers_available": [
+    "carla",
+    "booking",
+    "tarot",
+    "nordvpn",
+    "udemy",
+    "amazon_us",
+    "mercadolivre",
+    "shopee"
+  ],
+  "meta_credentials": {
+    "total_accounts": 3,
+    "with_real_token": 0,
+    "handles": [
+      "@aquitatem",
+      "@achadinhosdahora24hrs",
+      "@danielfernandesccd"
+    ],
+    "placeholders": [
+      "@aquitatem",
+      "@achadinhosdahora24hrs",
+      "@danielfernandesccd"
+    ],
+    "ready_to_publish": false
+  },
+  "totals": {
+    "comments": 5,
+    "drafts": 5,
+    "sem_intencao": 0,
+    "links_ok": 5,
+    "links_falha": 0,
+    "sem_cpa": 1
+  },
+  "drafts": [
+    {
+      "comment_id": "amostra-1",
+      "comment": "Quero desconto em hotel em Gramado!",
+      "user": "viajante_sp",
+      "lang": "pt",
+      "intent_score": 3,
+      "advertiser": {
+        "brand": "booking",
+        "name": "Booking.com",
+        "badge": "15% a 30% OFF em Hotéis"
+      },
+      "tagged_link": "https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=booking&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "link_check": {
+        "http_status": 307,
+        "location": "https://www.kqzyfj.com/click-101859672-17293138?sid=ig_comment_br_auto_intent_desktop&aff_sub=ig_comment_br_auto_intent_desktop&aff_sub2=BR&subid=ig_comment_br_auto_intent_desktop&subid1=BR&subId1=ig_comment_br_auto_intent_desktop",
+        "tag_present": true
+      },
+      "public_reply": "@viajante_sp ✨ Te mandei o link oficial com desconto no Booking no seu direct! Dá uma olhada nas suas mensagens 📩🚀",
+      "dm_message": "🏨 *Aqui está o seu Desconto no Booking.com!*\n\nConseguimos uma condição especial de 15% a 30% OFF para hotéis e pousadas verificadas!\n\n👉 *Acesse agora e garanta sua reserva:* https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=booking&site=ig_comment&slot=auto_intent&geo=BR&noint=1\n\n⚡ Vagas limitadas para a alta temporada!",
+      "monetized": true,
+      "monetization_note": null,
+      "status": "PRONTO_PARA_PUBLICAR_MANUALMENTE",
+      "publish_blocker": "sem token Meta valido — publicacao manual"
+    },
+    {
+      "comment_id": "amostra-2",
+      "comment": "Tem cupom para a Shopee?",
+      "user": "comprador_top",
+      "lang": "pt",
+      "intent_score": 2,
+      "advertiser": {
+        "brand": "shopee",
+        "name": "Shopee Brasil",
+        "badge": "Frete Grátis & Cupons até 70% OFF"
+      },
+      "tagged_link": "https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=shopee&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "link_check": {
+        "http_status": 307,
+        "location": "https://s.shopee.com.br/30n7ohzzU6?sid=ig_comment_br_auto_intent_desktop&aff_sub=ig_comment_br_auto_intent_desktop&aff_sub2=BR&subid=ig_comment_br_auto_intent_desktop&subid1=BR&subId1=ig_comment_br_auto_intent_desktop&sub_id=ig_comment_br_auto_intent_desktop",
+        "tag_present": true
+      },
+      "public_reply": "@comprador_top 🛍️ Lista de cupons da Shopee com frete grátis enviada no seu direct! 📦✨",
+      "dm_message": "🛍️ *Aqui está o Radar de Cupons Secretos da Shopee!*\n\nResgate cupons de frete grátis e descontos relâmpago de até 70% OFF verificados hoje:\n\n👉 *Acessar Cupons da Shopee:* https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=shopee&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "monetized": true,
+      "monetization_note": null,
+      "status": "PRONTO_PARA_PUBLICAR_MANUALMENTE",
+      "publish_blocker": "sem token Meta valido — publicacao manual"
+    },
+    {
+      "comment_id": "amostra-3",
+      "comment": "Preciso de VPN segura para streaming",
+      "user": "dev_secure",
+      "lang": "pt",
+      "intent_score": 2,
+      "advertiser": {
+        "brand": "nordvpn",
+        "name": "NordVPN",
+        "badge": "74% OFF + 3 Meses Grátis"
+      },
+      "tagged_link": "https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=nordvpn&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "link_check": {
+        "http_status": 307,
+        "location": "https://www.anrdoezrs.net/click-101859672-13914989?sid=ig_comment_br_auto_intent_desktop&aff_sub=ig_comment_br_auto_intent_desktop&aff_sub2=BR&subid=ig_comment_br_auto_intent_desktop&subid1=BR&subId1=ig_comment_br_auto_intent_desktop",
+        "tag_present": true
+      },
+      "public_reply": "@dev_secure 🛡️ Link do NordVPN com 74% OFF enviado no seu direct! 📩🔒",
+      "dm_message": "🛡️ *Aqui está o seu Cupom NordVPN (74% OFF + 3 Meses Grátis)!*\n\nProteja seus dados, navegue 100% anônimo e libere streamings e sites bloqueados no mundo inteiro:\n\n👉 *Ativar Proteção com 74% OFF:* https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=nordvpn&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "monetized": true,
+      "monetization_note": null,
+      "status": "PRONTO_PARA_PUBLICAR_MANUALMENTE",
+      "publish_blocker": "sem token Meta valido — publicacao manual"
+    },
+    {
+      "comment_id": "amostra-4",
+      "comment": "Aluguel de carro em Fortaleza, alguma dica?",
+      "user": "ferias_ce",
+      "lang": "pt",
+      "intent_score": 3,
+      "advertiser": {
+        "brand": "carla",
+        "name": "Carla Car Rental",
+        "badge": "Aluguel de Carros com Menor Tarifa Garantida"
+      },
+      "tagged_link": "https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=carla&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "link_check": {
+        "http_status": 307,
+        "location": "https://www.kqzyfj.com/click-101859672-15736982?sid=ig_comment_br_auto_intent_desktop&aff_sub=ig_comment_br_auto_intent_desktop&aff_sub2=BR&subid=ig_comment_br_auto_intent_desktop&subid1=BR&subId1=ig_comment_br_auto_intent_desktop",
+        "tag_present": true
+      },
+      "public_reply": "@ferias_ce 🚗 Te enviei a cotação com desconto de aluguel de carros no seu direct! 📩",
+      "dm_message": "🚗 *Aqui está o seu Cupom de Aluguel de Carros!*\n\nCompare as melhores locadoras (Localiza, Movida, Hertz, Avis) com a menor tarifa garantida:\n\n👉 *Alugue com desconto aqui:* https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=carla&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "monetized": true,
+      "monetization_note": null,
+      "status": "PRONTO_PARA_PUBLICAR_MANUALMENTE",
+      "publish_blocker": "sem token Meta valido — publicacao manual"
+    },
+    {
+      "comment_id": "amostra-5",
+      "comment": "Curso de ingles para meu filho, tem opcao barata?",
+      "user": "mae_pratica",
+      "lang": "pt",
+      "intent_score": 1,
+      "advertiser": {
+        "brand": "udemy",
+        "name": "Udemy",
+        "badge": "Cursos Certificados a partir de R$ 27,90"
+      },
+      "tagged_link": "https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=udemy&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "link_check": {
+        "http_status": 307,
+        "location": "https://www.udemy.com/courses/search/?src=ukw&q=",
+        "tag_present": false
+      },
+      "public_reply": "@mae_pratica 🎓 Link com os cursos mais bem avaliados e com desconto enviado no seu direct! 📚💡",
+      "dm_message": "🎓 *Aqui está o seu Desconto Exclusivo na Udemy!*\n\nMais de 200.000 cursos certificados de Programação, IA, Negócios e Design a partir de R$ 27,90:\n\n👉 *Acessar Cursos com Desconto:* https://achadinhos-ad-engine.vercel.app/api/ads/go?brand=udemy&site=ig_comment&slot=auto_intent&geo=BR&noint=1",
+      "monetized": false,
+      "monetization_note": "SEM PROGRAMA DE AFILIADO ATIVO nesta conta: o gateway marca udemy/faculdade como NON_MONETIZED e NAO adiciona a tag. Qualquer trafego enviado aqui nao gera comissao nem rastreio.",
+      "status": "SEM_CPA_NAO_MONETIZADO",
+      "publish_blocker": "sem token Meta valido — publicacao manual"
+    }
+  ]
+}
