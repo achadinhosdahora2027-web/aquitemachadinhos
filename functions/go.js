@@ -72,6 +72,20 @@ export async function onRequestGet({ request }) {
       }
     }
   }
+  // ── v330 — REDE DE SEGURANÇA DE ATRIBUIÇÃO ────────────────────────────────
+  // Achado testando o caminho que o visitante usa de verdade (www → /go → oferta):
+  // a Shopee vinha da tabela pública como link cru e era entregue SEM TAG — na
+  // prática o utm_content chegava como '----' no destino, ou seja, clique sem
+  // atribuição e venda sem comissão rastreada. Mercado Livre e eBay tinham o
+  // mesmo furo. Os demais anunciantes (CJ, Amazon, Booking, NordVPN) já passavam
+  // pelo gateway.
+  // Agora todo destino monetizável cru é envelopado: o gateway anexa o sub_id e
+  // preserva o link específico do produto em ?dest=.
+  if (dest && dest.indexOf('achadinhos-ad-engine') < 0
+      && /s\.shopee\.com|meli\.la|ebay\.com\/deals/.test(dest)) {
+    const b = /shopee/.test(dest) ? 'shopee' : (/meli\.la|mercadolivre/.test(dest) ? 'mercadolivre' : 'ebay');
+    dest = ENGINE + '?brand=' + b + '&site=' + site + '&slot=go_' + sid.slice(-8) + '&dest=' + encodeURIComponent(dest);
+  }
   if (!dest) dest = site === 'solvegrid' ? 'https://www.solvegrid.com.br/' : site === 'nexus' ? 'https://nexusplataforma.ia.br/' : 'https://www.aquitemachadinhos.com.br/';
   if (dest.indexOf('achadinhos-ad-engine.vercel.app') >= 0 && dest.indexOf('noint=') < 0) {
     dest += (dest.indexOf('?') >= 0 ? '&' : '?') + 'noint=1';
