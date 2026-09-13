@@ -25,6 +25,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Testar shortener híbrido v420
+        run: npm run test:v420
+
       - name: Preparar pasta de publicação (site + Pages Functions)
         run: |
           # o site vive em public/ e as Functions ficam na raiz do repositório.
@@ -70,3 +73,12 @@ jobs:
             [ "$ok" = "1" ] || falhou=1
           done
           [ "$falhou" = "0" ] || { echo "::error::alguma URL não respondeu 2xx/3xx após 8 tentativas"; exit 1; }
+
+          # Prova funcional v420 com UA humano: gateway saudável rende HTML 200;
+          # 404/timeout rende 302 direto. Em ambos, o cabeçalho de versão é obrigatório.
+          curl -sS -m 10 -A 'Mozilla/5.0 Chrome/140.0 Safari/537.36' \
+            -D /tmp/go-v420.headers -o /tmp/go-v420.body \
+            'https://www.aquitemachadinhos.com.br/go?marca=mercadolivre&dest=https%3A%2F%2Fmeli.la%2F1U3rtgV&sid=workflow_v420'
+          grep -qi '^x-nexus-edge: v420.0' /tmp/go-v420.headers || {
+            echo "::error::shortener publicado não confirmou X-Nexus-Edge v420.0"; cat /tmp/go-v420.headers; exit 1;
+          }

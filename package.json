@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "start": "serve public",
+    "test:v420": "node tests/go-v420.test.mjs",
     "vercel-prebuild": "node scripts/sync-sitemaps.js",
     "kit:test": "node growth-kit/tests/suite.test.mjs",
     "kit:exports": "node growth-kit/scripts/check-exports.mjs",

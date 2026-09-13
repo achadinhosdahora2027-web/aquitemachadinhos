@@ -4,6 +4,13 @@
 const SB = 'https://etbxbaaaspdcoiakifbb.supabase.co';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV0YnhiYWFhc3BkY29pYWtpZmJiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY5NTE2OTcsImV4cCI6MjEwMjUyNzY5N30.529X__LRoPurMqRJBVmiI9EYY8wgIv3cefZ-nxSiKJ0';
 const ENGINE = 'https://achadinhos-ad-engine.vercel.app/api/ads/go';
+// v420: orçamento nominal de borda. O desvio acontece ao atingir 404/erro/timeout;
+// nenhum retry é feito no caminho do comprador.
+const EDGE_FALLBACK_BUDGET_MS = 45;
+const ENGINE_PROBE_MAX_MS = 35;
+const MELI_FALLBACK = 'https://meli.la/1U3rtgV?matt_tool=56714869';
+const EBAY_TIER1_FALLBACK = 'https://www.ebay.com/deals?campid=5339193749&toolid=10001&mkevt=1&mkcid=1&mkrid=711-53200-19255-0';
+const SAFE_DIRECT_HOST = /(^|\.)(meli\.la|mercadolivre\.com\.br|s\.shopee\.com\.br|shopee\.com\.br|amazon\.com\.br|lmdee\.link|ebay\.(com|co\.uk|de|fr|ca)|booking\.com|kqzyfj\.com|jdoqocy\.com|anrdoezrs\.net|dpbolvw\.net|tkqlhce\.com)$/i;
 const CJ = ['jdoqocy.com', 'anrdoezrs.net', 'tkqlhce.com', 'dpbolvw.net', 'kqzyfj.com'];
 const BRANDS = ['booking','nordvpn','nordpass','surfshark','carla','shopee','mercadolivre','ebay','amazon','amazon_us','aliexpress','malwarebytes','wondershare','movavi','parallels','corel','sucuri','updf','switchbot','bluetti','soundcore','novakid','economybookings','faculdade','clickbus','udemy','voo'];
 const SEL = 'id,name,advertiser,category,region,promo_type,coupon_code,click_url';
@@ -66,10 +73,70 @@ function destinoMoedaEstrangeira(url) {
   } catch (e) { return false; }
 }
 
+function decodeDest64(value) {
+  try {
+    const raw = String(value || '').replace(/-/g, '+').replace(/_/g, '/');
+    const padded = raw + '='.repeat((4 - raw.length % 4) % 4);
+    const bytes = Uint8Array.from(atob(padded), (c) => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  } catch (e) { return ''; }
+}
+
+function safeDirectUrl(value) {
+  try {
+    const x = new URL(String(value || '').trim());
+    if (x.protocol !== 'https:' || !SAFE_DIRECT_HOST.test(x.hostname)) return null;
+    return x.toString();
+  } catch (e) { return null; }
+}
+
+function brandForDirect(value) {
+  try {
+    const h = new URL(value).hostname.toLowerCase();
+    if (h.includes('shopee')) return 'shopee';
+    if (h === 'meli.la' || h.includes('mercadolivre')) return 'mercadolivre';
+    if (h.includes('ebay')) return 'ebay';
+    if (h.includes('amazon.com.br')) return 'amazon';
+    if (h.includes('booking') || /(kqzyfj|jdoqocy|anrdoezrs|dpbolvw|tkqlhce)/.test(h)) return 'booking';
+  } catch (e) {}
+  return 'auto';
+}
+
+function directFallback(country, candidate) {
+  const cc = String(country || '').toUpperCase();
+  if (cc === 'BR') {
+    const safe = safeDirectUrl(candidate);
+    if (safe && !destinoMoedaEstrangeira(safe)) {
+      const x = new URL(safe);
+      if (x.hostname.toLowerCase() === 'meli.la') x.searchParams.set('matt_tool', '56714869');
+      return x.toString();
+    }
+    return MELI_FALLBACK;
+  }
+  if (['US', 'CA', 'GB', 'DE', 'FR'].includes(cc)) return EBAY_TIER1_FALLBACK;
+  return safeDirectUrl(candidate) || EBAY_TIER1_FALLBACK;
+}
+
+async function probeEngine(url, timeoutMs) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), Math.max(1, timeoutMs));
+  try {
+    const r = await fetch(url, { method: 'GET', redirect: 'manual', signal: ctrl.signal,
+      headers: { 'X-Nexus-Probe': 'v420.0' } });
+    if (r.status === 404) return { ok: false, reason: 'http_404', status: 404 };
+    if (r.status >= 200 && r.status < 400) return { ok: true, reason: 'healthy', status: r.status };
+    return { ok: false, reason: 'http_' + r.status, status: r.status };
+  } catch (e) {
+    return { ok: false, reason: e && e.name === 'AbortError' ? 'timeout' : 'network_error', status: 0 };
+  } finally { clearTimeout(timer); }
+}
+
 export async function onRequestGet({ request }) {
+  const edgeStarted = Date.now();
   const u = new URL(request.url);
-  const marca = (u.searchParams.get('marca') || '').trim().slice(0, 60);
-  const oferta = (u.searchParams.get('oferta') || '').trim();
+  const marca = (u.searchParams.get('marca') || u.searchParams.get('brand') || '').trim().slice(0, 60);
+  const oferta = (u.searchParams.get('oferta') || u.searchParams.get('offer') || '').trim();
+  const directIn = safeDirectUrl(u.searchParams.get('dest')) || safeDirectUrl(decodeDest64(u.searchParams.get('dest64')));
   const host = u.hostname || '';
   const UA_PRE = String(request.headers.get('user-agent') || '');
   /* IP REAL do visitante (borda Cloudflare) — não o IP de quem chama o motor */
@@ -83,18 +150,29 @@ export async function onRequestGet({ request }) {
   const sidIn = (u.searchParams.get('sid') || '').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 60);
   const sid = sidIn || (site + '_oferta_' + (oferta ? oferta.replace(/-/g, '').slice(0, 8) : marca || 'dir')).replace(/[^a-zA-Z0-9_]/g, '').slice(0, 60);
   let row = null;
+  let catalogDirect = directIn;
   try {
-    let r = null;
-    if (oferta && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(oferta)) {
-      r = await fetch(SB + '/rest/v1/nexus_public_offers_ordered_mv?id=eq.' + oferta + '&select=' + SEL + '&limit=1', { headers: HDRS });
-    } else if (marca) {
-      r = await fetch(SB + '/rest/v1/nexus_public_offers_ordered_mv?advertiser=ilike.*' + encodeURIComponent(marca) + '*&select=' + SEL + '&order=rank_score.desc&limit=1', { headers: HDRS });
+    // Mensagens v420 já carregam dest/dest64: nesse caso não se gasta o orçamento
+    // de 45 ms consultando o catálogo outra vez.
+    if (!directIn) {
+      let r = null;
+      const remaining = Math.max(1, Math.min(22, EDGE_FALLBACK_BUDGET_MS - (Date.now() - edgeStarted)));
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), remaining);
+      try {
+        if (oferta && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(oferta)) {
+          r = await fetch(SB + '/rest/v1/nexus_public_offers_ordered_mv?id=eq.' + oferta + '&select=' + SEL + '&limit=1', { headers: HDRS, signal: ctrl.signal });
+        } else if (marca) {
+          r = await fetch(SB + '/rest/v1/nexus_public_offers_ordered_mv?advertiser=ilike.*' + encodeURIComponent(marca) + '*&select=' + SEL + '&order=rank_score.desc&limit=1', { headers: HDRS, signal: ctrl.signal });
+        }
+        if (r && r.ok) row = (await r.json())[0] || null;
+      } finally { clearTimeout(timer); }
     }
-    if (r && r.ok) row = (await r.json())[0] || null;
   } catch (e) {}
   let dest = null, cjDirect = null;
   if (row) {
     const cu = String(row.click_url || '');
+    catalogDirect = safeDirectUrl(cu) || catalogDirect;
     for (const d of CJ) {
       if (cu.indexOf(d) >= 0) {
         const m = cu.match(/click-\d+-(\d+)/);
@@ -112,6 +190,11 @@ export async function onRequestGet({ request }) {
       }
     }
     if (!dest) dest = cjDirect || (ENGINE + '?brand=auto&site=' + site + '&slot=' + SLOT_DIN + '&keyword=' + encodeURIComponent(TERMO || 'oferta') + GEOQ);
+  }
+  if (!dest && directIn) {
+    const safeBrand = BRANDS.includes(marca.toLowerCase()) ? marca.toLowerCase() : brandForDirect(directIn);
+    dest = ENGINE + '?brand=' + safeBrand + '&site=' + site + '&slot=' + SLOT_DIN +
+      '&keyword=' + encodeURIComponent(TERMO || safeBrand) + GEOQ + '&dest=' + encodeURIComponent(directIn);
   }
   if (!dest && marca) {
     const mk = marca.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -168,8 +251,30 @@ export async function onRequestGet({ request }) {
   const IS_BOT = !UA || BOT_AD_RE.test(UA);
   const NOINT = u.searchParams.get('noint') === '1';
   const RH = { 'Location': dest, 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer',
-               'X-Nexus-Edge': 'v340.0', 'X-Br-Lock': brLock, 'X-Slot-Dinamico': SLOT_DIN, 'X-Visitor-Country': CC || 'desconhecido' };
+               'X-Nexus-Edge': 'v420.0', 'X-Br-Lock': brLock, 'X-Slot-Dinamico': SLOT_DIN, 'X-Visitor-Country': CC || 'desconhecido' };
   if (IS_BOT || NOINT) return new Response(null, { status: 302, headers: RH });
+
+  /* v420 — porta híbrida anti-404. O orçamento é absoluto desde a entrada da
+     Function. Se o gateway não provar saúde dentro dele, a borda devolve 302
+     direto ao click_url verificado; não renderiza intersticial quebrado. */
+  if (dest.indexOf(ENGINE) === 0) {
+    const elapsed = Date.now() - edgeStarted;
+    const remaining = Math.min(ENGINE_PROBE_MAX_MS, EDGE_FALLBACK_BUDGET_MS - elapsed);
+    const probe = remaining > 0
+      ? await probeEngine(dest, remaining)
+      : { ok: false, reason: 'deadline', status: 0 };
+    if (!probe.ok) {
+      const fallback = directFallback(CC, catalogDirect);
+      return new Response(null, { status: 302, headers: {
+        ...RH,
+        'Location': fallback,
+        'X-Nexus-Fallback': 'direct',
+        'X-Nexus-Engine-Probe': probe.reason,
+        'Server-Timing': 'edge;dur=' + (Date.now() - edgeStarted)
+      }});
+    }
+  }
+
   const hostLower = host.toLowerCase().replace(/^www\./, '');
   // v128 — fail-closed: default SEMPRE null; só injeta tag do PRÓPRIO host (match 1:1).
   let popunderTag = null;
@@ -218,7 +323,7 @@ export async function onRequestGet({ request }) {
     + '<p>Se não avançar automaticamente, toque no botão.</p>'
     + '<a class="go" id="go" href="' + sd + '" rel="nofollow noopener">Continuar para a oferta</a>'
     + '<noscript><p><a href="' + sd + '" rel="nofollow noopener">Clique aqui para continuar</a></p></noscript>'
-    + '<div class="tags">Carregando ofertas verificadas • ' + site + ' • ' + sid.slice(-8) + ' • v128</div>'
+    + '<div class="tags">Carregando ofertas verificadas • ' + site + ' • ' + sid.slice(-8) + ' • v420</div>'
     + '</div>'
     + '<script>(function(){var DEST=' + JSON.stringify(dest) + ';var SITE="' + site + '";var SID="' + sid + '";'
     + 'function load(src,zone,name){return new Promise(function(res){try{var s=document.createElement("script");s.src=src;s.async=true;s.setAttribute("data-cfasync","false");if(zone)s.setAttribute("data-zone",zone);s.onload=function(){res("ok")};s.onerror=function(){res("err")};document.body.appendChild(s)}catch(e){res("err")}})}'
@@ -231,6 +336,6 @@ export async function onRequestGet({ request }) {
     + '</body></html>';
   return new Response(html, {
     status: 200,
-    headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer', 'X-Adsterra-Binding': TAG_BINDING }
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow', 'Cache-Control': 'no-store, max-age=0', 'Referrer-Policy': 'no-referrer', 'X-Adsterra-Binding': TAG_BINDING, 'X-Nexus-Edge': 'v420.0', 'X-Nexus-Engine-Probe': 'healthy', 'Server-Timing': 'edge;dur=' + (Date.now() - edgeStarted) }
   });
 }
